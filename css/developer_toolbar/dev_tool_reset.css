@@ -1,0 +1,56 @@
+/* http://meyerweb.com/eric/tools/css/reset/ */
+/* v1.0 | 20080212 */
+
+#dev_tool div, #dev_tool span, #dev_tool applet, #dev_tool object, #dev_tool iframe,
+#dev_tool h1, #dev_tool h2, #dev_tool h3, #dev_tool h4, #dev_tool h5, #dev_tool h6, 
+#dev_tool p, #dev_tool blockquote, #dev_tool pre, #dev_tool a, abbr, #dev_tool acronym,
+#dev_tool address, #dev_tool big, #dev_tool cite, #dev_tool code,#dev_tool del, #dev_tool dfn, 
+#dev_tool em, #dev_tool font, #dev_tool img, #dev_tool ins, #dev_tool kbd, #dev_tool q, #dev_tool s, 
+#dev_tool samp, #dev_tool small, #dev_tool strike, #dev_tool strong, #dev_tool sub, #dev_tool sup, 
+#dev_tool tt, #dev_tool var, #dev_tool b, #dev_tool u, #dev_tool i, #dev_tool center, #dev_tool dl, 
+#dev_tool dt, #dev_tool dd, #dev_tool ol, #dev_tool ul, #dev_tool li, #dev_tool fieldset, #dev_tool form, 
+#dev_tool label, #dev_tool legend, #dev_tool table, #dev_tool caption, #dev_tool tbody, #dev_tool tfoot, 
+#dev_tool thead, #dev_tool tr, #dev_tool th, #dev_tool td {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	outline: 0;
+	font-size: 100%;
+	vertical-align: baseline;
+	background: transparent;
+	font-size:12px;
+	font-family:Arial, Helvetica, sans-serif;	
+}
+
+#dev_tool ol, #dev_tool ul {
+	list-style: none;
+}
+#dev_tool blockquote,#dev_tool q {
+	quotes: none;
+}
+#dev_tool blockquote:before,#dev_tool blockquote:after,
+#dev_tool q:before,#dev_tool q:after {
+	content: '';
+	content: none;
+}
+
+/* remember to define focus styles! */
+#dev_tool :focus {
+	outline: 0;
+}
+
+/* remember to highlight inserts somehow! */
+#dev_tool ins {
+	text-decoration: none;
+}
+#dev_tool del {
+	text-decoration: line-through;
+}
+
+/* tables still need 'cellspacing="0"' in the markup */
+#dev_tool table {
+	border-collapse: collapse;
+	border-spacing: 0;
+	width:100%;
+	text-align:left;
+}

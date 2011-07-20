@@ -1,0 +1,266 @@
+/*
+Name: Sliding Login Panel with jQuery 1.3.2
+Author: Jeremie Tisseau
+Author URI: http://web-kreation.com/
+Date: March 26, 2009
+Version: 1.0
+
+	Copyright 2009 Jeremie Tisseau
+	"Sliding Login Panel with jQuery 1.3.2" is distributed under the GNU General Public License version 3:
+	http://www.gnu.org/licenses/gpl-3.0.html
+*/
+
+/***** clearfix *****/
+.clear {
+	clear: both;
+	height: 0;
+	line-height: 0;
+}
+
+.clearfix:after {
+	content: ".";
+	display: block;
+	height: 0;
+	clear: both; 
+	visibility: hidden;
+}
+.clearfix {
+	display: inline-block;
+}
+/* Hides from IE-mac \*/
+* html .clearfix {
+	height: 1%;
+}
+.clearfix {
+	display: block;
+}
+/* End hide from IE-mac */
+.clearfix {	
+	height: 1%;
+}
+.clearfix {
+	display: block;
+}
+
+/* Panel Tab/button */
+#dev_tool .tab {
+  	background: url(images/slide/tab_b.png) repeat-x 0 0 !important;
+	height: 42px;
+	position: relative;
+    top: 0;
+    z-index: 999;
+}
+
+#dev_tool .tab ul.login {
+	display: block;
+	position: relative;
+  	float: right;
+  	clear: right;
+  	height: 42px;
+	width: auto;
+  	font-weight: bold;
+	line-height: 42px;
+	margin: 0;
+	right: 150px;
+  	color: white;
+  	font-size: 80%;
+	text-align: center;
+}
+
+#dev_tool .tab ul.login li.left {
+  	background: url(images/slide/tab_l.png) no-repeat left 0;
+  	height: 42px;
+	width: 30px;
+	padding: 0;
+	margin: 0;
+  	display: block;
+	float: left;
+}
+
+#dev_tool .tab ul.login li.right {
+  	background: url(images/slide/tab_r.png) no-repeat left 0;
+  	height: 42px;
+	width: 30px;
+	padding: 0;
+	margin: 0;
+  	display: block;
+	float: left;
+}
+
+#dev_tool .tab ul.login li {
+ 	text-align: left;
+  	padding: 0 6px;
+	display: block;
+	float: left;
+	height: 42px;
+  	background: url(images/slide/tab_m.png) repeat-x 0 0;
+}
+
+#dev_tool .tab ul.login li a {
+	color: #15ADFF;
+}
+
+#dev_tool .tab ul.login li a:hover {
+	color: white;
+}
+
+#dev_tool .tab .sep {color:#414141}
+
+#dev_tool .tab a.open, .tab a.close {
+	height: 20px;
+	line-height: 20px !important;
+	padding-left: 30px !important;
+	cursor: pointer;
+	display: block;
+	/*width: 100px;*/
+	position: relative;
+	top: 11px;
+}
+
+#dev_tool .tab a.open {background: url(images/slide/bt_open.png) no-repeat left 0;}
+#dev_tool .tab a.close {background: url(images/slide/bt_close.png) no-repeat left 0;}
+#dev_tool .tab a:hover.open {background: url(images/slide/bt_open.png) no-repeat left -19px;}
+#dev_tool .tab a:hover.close {background: url(images/slide/bt_close.png) no-repeat left -19px;}
+
+/* sliding panel */
+#dev_tool #toppanel {
+    position: absolute;   /*Panel will overlap  content */
+    /*position: relative;*/   /*Panel will "push" the content down */
+    top: 0;
+    width: 100%;
+    z-index: 999;
+    text-align: center;
+    margin-left: auto;
+	left:0px;
+    margin-right: auto;
+}
+
+#dev_tool #panel {
+	width: 100%;
+	height: 270px;
+	color: #999999;
+	background: #272727;
+	overflow: hidden;
+	position: relative;
+	z-index: 3;
+	display: none;
+	font: Arial, Helvetica, sans-serif;
+}
+
+#dev_tool #panel h1 {
+	font-size:16px;
+	/*font-size: 1.6em;
+	padding: 5px 0 10px;
+	margin: 0;*/
+	color: white;
+}
+
+#dev_tool #panel h2{
+	font-size: 14px;
+	padding: 10px 0 5px;
+	margin: 0;
+	color: white;
+}
+
+#dev_tool #panel p {
+	margin: 5px 0;
+	padding: 0;
+}
+
+#dev_tool #panel p .grey {
+	color: #999999;
+}
+
+#dev_tool #panel a {
+	text-decoration: none;
+	color: #15ADFF;
+	cursor:pointer;
+}
+
+#dev_tool #panel a:hover {
+	color: white;
+}
+
+#dev_tool #panel a-lost-pwd {
+	display: block;
+	float: left;
+}
+
+#dev_tool #panel .content {
+	margin: 0;
+	padding: 0px 25px 0px 25px;
+	text-align: left;
+	font-size: 0.85em;
+}
+
+#dev_tool #panel .content .left {
+	width: 650px;
+	float: left;
+	padding: 5px 15px;
+}
+
+#dev_tool #panel .content .right {
+	float: left;
+	border-left: 1px solid #333;
+}
+
+#dev_tool #panel .content form {
+	margin: 0 0 10px 0;
+}
+
+#dev_tool #panel .content label {
+	float: left;
+	padding-top: 8px;
+	clear: both;
+	width: 280px;
+	display: block;
+}
+
+#dev_tool #panel .content input.field {
+	border: 1px #1A1A1A solid;
+	background: #414141;
+	margin-right: 5px;
+	margin-top: 4px;
+	width: 200px;
+	color: white;
+	height: 16px;
+}
+
+#dev_tool #panel .content input:focus.field {
+	background: #545454;
+}
+
+/* BUTTONS */
+/* Login and Register buttons */
+#dev_tool #panel .content input.bt_login,
+#dev_tool #panel .content input.bt_register {
+	display: block;
+	float: left;
+	clear: left;
+	height: 24px;
+	text-align: center;
+	cursor: pointer;
+	border: none;
+	font-weight: bold;
+	margin: 10px 0;
+}
+
+#dev_tool #panel .content input.bt_login {
+	width: 74px;
+	background: transparent url(images/slide/bt_login.png) no-repeat 0 0;
+}
+
+#dev_tool #panel .content input.bt_register {
+	width: 94px;
+	color: white;
+	background: transparent url(images/slide/bt_register.png) no-repeat 0 0;
+}
+
+#dev_tool #panel .lost-pwd {
+	display: block;
+	float:left;
+	clear: right;
+	padding: 15px 5px 0;
+	font-size: 0.95em;
+	text-decoration: underline;
+}

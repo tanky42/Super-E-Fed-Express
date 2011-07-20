@@ -1,0 +1,5 @@
+[20-Jul-2011 07:39:20] PHP Fatal error:  Class 'Test' not found in /home/robis3rc/public_html/see/application/modules/tests/controllers/tests.php on line 13
+[20-Jul-2011 07:53:14] PHP Fatal error:  Call to undefined function  is_set() in /home/robis3rc/public_html/see/application/modules/tests/controllers/tests.php on line 17
+[20-Jul-2011 08:01:41] PHP Parse error:  syntax error, unexpected T_VARIABLE, expecting T_FUNCTION in /home/robis3rc/public_html/see/application/modules/tests/models/test.php on line 4
+[20-Jul-2011 08:38:49] PHP Fatal error:  Class 'lname' not found in /home/robis3rc/public_html/see/application/libraries/datamapper.php on line 1154
+[20-Jul-2011 13:21:22] PHP Parse error:  syntax error, unexpected T_IF in /home/robis3rc/public_html/see/application/modules/alignments/controllers/alignments.php on line 101
