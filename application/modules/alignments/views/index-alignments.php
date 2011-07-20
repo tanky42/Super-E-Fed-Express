@@ -170,6 +170,8 @@
 
 			$("#editAlignmentDialog").dialog("open");
 		});
+		
+		$(".list_button").button();
 	});
 
 	function clear_flash()
@@ -187,11 +189,82 @@
 		}
 	}
 	</script>
+	
+	<style>
+	#alignments {
+		list-style: none;
+	}
+	
+	.alignment_name {
+		font-size: 16px;
+		margin-right: 15px;
+		text-decoration: none;
+	}
+	
+	#test_list {
+		list-style: none;
+		width: 30%;
+	}
+	
+	#test_list li {
+		display: block;
+		line-height: 20px;
+		margin-bottom: 5px;
+		padding: 5px;
+	}
+	
+	#test_list li input {
+		width: auto;
+		margin: 0px 25px 0px 15px;
+		vertical-align: middle;
+	}
+	
+	.item_name {
+		font-size: 18px;
+		vertical-align: middle;
+	}
+	
+	.list_button {
+		float: right;
+	}
+	
+	.clear {
+		clear: both;
+	}
+	</style>
 </head>
 <body>
 	<div id="flash">
 		<?php echo $this->session->flashdata('form_message'); ?>
 	</div>
+	
+	<p>
+		<div class="list_header">
+			<h1>Alignments</h1>
+			<div class="list_buttons">
+				<button class="list_button">Delete Checked</button>
+				<button class="list_button">Add Alignment</button>
+			</div>
+			<div class="clear"></div>
+		</div>
+		<ul id="test_list">
+			<li>
+				<input type="checkbox" name="delete[]" class="delete_check" value="1" />
+				<span class="item_name">Face</span>
+				<button class="list_button delete_item">Delete</button>
+				<button class="list_button edit_item">Edit</button>
+				<span class="clear"></span>
+			</li>
+			
+			<li>
+				<input type="checkbox" name="delete[]" class="delete_check" value="1" />
+				<span class="item_name">Heel</span>
+				<button class="list_button delete_item">Delete</button>
+				<button class="list_button edit_item">Edit</button>
+				<span class="clear"></span>
+			</li>
+		</ul>
+	</p>
 
 	<p>		
 		<h3>Alignments</h3>
