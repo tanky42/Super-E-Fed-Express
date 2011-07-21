@@ -1,0 +1,37 @@
+#alignments {
+	list-style: none;
+	width: 30%;
+}
+	
+#alignments li {
+	display: block;
+	height: 34px;
+	line-height: 20px;
+	margin-bottom: 5px;
+	padding: 5px;
+}
+	
+#alignments li input {
+	width: auto;
+	margin: 6px 25px 0px 15px;
+	vertical-align: middle;
+}
+
+.list_controls {
+	margin: 15px 0 15px 0;
+}
+	
+.item_name {
+	display: inline-block;
+	font-size: 32px;
+	margin-top: 6px;
+	vertical-align: middle;
+}
+	
+.list_button {
+	float: right;
+}
+
+.edit_item {
+	margin-right: 6px;
+}

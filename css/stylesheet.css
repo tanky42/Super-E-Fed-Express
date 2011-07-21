@@ -4,6 +4,10 @@ body {
 	margin: 40px;
 }
 
+.hide {
+	display: none;
+}
+
 #flash {
 	width: 45%;
 }
@@ -21,4 +25,14 @@ body {
 .message_success {
 	background: #99FF99;
 	border: 2px solid #006600;	
+}
+
+.new_item {
+	background: #FFFFCC;
+	border: 1px solid #FFC111;
+}
+
+.marked_for_delete {
+	background: #CCFFFF;
+	border: 1px solid #CCCCFF;
 }

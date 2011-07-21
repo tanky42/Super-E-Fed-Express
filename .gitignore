@@ -2,3 +2,4 @@ application/.DS_Store
 application/views/.DS_Store
 application/config/database.php
 license.txt
+.DS_Store
