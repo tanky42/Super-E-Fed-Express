@@ -171,7 +171,7 @@
 			$("#editAlignmentDialog").dialog("open");
 		});
 		
-		$(".list_button").button();
+		$(".list_button, .list_button2").button();
 	});
 
 	function clear_flash()
@@ -241,9 +241,10 @@
 	<p>
 		<div class="list_header">
 			<h1>Alignments</h1>
-			<div class="list_buttons">
-				<button class="list_button">Delete Checked</button>
-				<button class="list_button">Add Alignment</button>
+			<div class="list_buttons2">
+				<button class="list_button2">Delete Checked</button>
+				<button class="list_button2">Add Alignment</button>
+				<div class="clear"></div>
 			</div>
 			<div class="clear"></div>
 		</div>
@@ -253,7 +254,7 @@
 				<span class="item_name">Face</span>
 				<button class="list_button delete_item">Delete</button>
 				<button class="list_button edit_item">Edit</button>
-				<span class="clear"></span>
+				<div class="clear"></div>
 			</li>
 			
 			<li>
@@ -261,7 +262,7 @@
 				<span class="item_name">Heel</span>
 				<button class="list_button delete_item">Delete</button>
 				<button class="list_button edit_item">Edit</button>
-				<span class="clear"></span>
+				<div class="clear"></div>
 			</li>
 		</ul>
 	</p>
