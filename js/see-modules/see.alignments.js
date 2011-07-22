@@ -167,21 +167,17 @@ function alignment_add_form()
 
 			if (alignment.success == 1)
 			{
-				var new_item = "<li>";
-				new_item += "<input type='checkbox' name='delete_alignment[]' class='alignment_delete_check' value='1' />";
-				new_item += "<span class='item_name'>" + new_alignment + "</span>";
-				new_item += "<input type='hidden' value='" + alignment.id + "' />";
-				new_item += "<button class='list_button delete_item'>Delete</button>";
-				new_item += "<button class='list_button edit_item'>Edit</button>";
-				new_item += "<div class='clear'></div>";
-				new_item += "</li>";
+				$("#alignments_list").empty().html(alignment.list).find("button").button();
 
-				$("#alignments").append(new_item);
-
-				$("#alignments").children().last().addClass("new_item").delay(5000)
-					.switchClass("new_item", "temp_class", 1000, "easeOutBounce", function() {
-						$(".temp_class").removeClass("temp_class");
-					}).children("button").button();
+				$("#alignments").children().each(function() {
+					if ($(this).children("input").last().val() == alignment.id)
+					{
+						$(this).addClass("new_item").delay(5000)
+							.switchClass("new_item", "temp_class", 1000, "easeOutBounce", function() {
+								$(".temp_class").removeClass("temp_class");
+							}).children("button").button();
+					}
+				});
 
 				$("#flash").show().fadeIn(400).addClass("message_success").html(alignment.message).delay(5000)
 					.switchClass("message_success", "temp_class", 1000, "easeOutBounce", function() {
@@ -218,10 +214,21 @@ function alignment_update_form()
 
 			if (alignment.success == 1)
 			{
-				$(".editing").text(updated_alignment).removeClass("editing").parent().addClass("new_item").delay(5000)
-					.switchClass("new_item", "temp_class", 1000, "easeOutBounce", function() {
-						$(".temp_class").removeClass("temp_class");
+				$("#alignments_list").empty().html(alignment.list).find("button").button();
+
+				var alignment_ids = jQuery.parseJSON(alignment.id);
+
+				$.each(alignment_ids, function(k, v) {
+					$("#alignments").children().each(function() {
+						if ($(this).children("input").last().val() == v)
+						{
+							$(this).addClass("new_item").delay(5000)
+								.switchClass("new_item", "temp_class", 1000, "easeOutBounce", function() {
+									$(".temp_class").removeClass("temp_class");
+								}).children("button").button();
+						}
 					});
+				});				
 
 				$("#flash").show().fadeIn(400).addClass("message_success").html(alignment.message).delay(5000)
 					.switchClass("message_success", "temp_class", 1000, "easeOutBounce", function() {

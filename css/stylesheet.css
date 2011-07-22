@@ -4,6 +4,49 @@ body {
 	margin: 40px;
 }
 
+header {
+	height: 75px;
+	margin-bottom: 25px;
+	padding: 0px 25px 0px 25px;
+	width: 90%;
+	position: fixed;
+	top: 40px;
+	left: 40px;
+}
+
+header nav {
+	font-size: 18px;
+	text-align: center;
+}
+
+header nav ul {
+	list-style: none;
+}
+
+header nav ul li {
+	display: inline-block;	
+	padding: 15px;
+}
+
+#main {
+	height: 111px;
+	overflow: auto;
+	padding: 0px 40px 0px 40px;
+	width: 88%;
+	position: fixed;
+	top: 140px;
+}
+
+footer {
+	height: 50px;
+	margin-top: 15px;
+	padding: 0px 25px 0px 25px;
+	width: 90%;
+	position: fixed;
+	bottom: 40px;
+	left: 40px;
+}
+
 .hide {
 	display: none;
 }
