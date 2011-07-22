@@ -88,10 +88,10 @@ class Alignments extends MX_Controller {
 
 	function update_alignment_ajax()
 	{
-		if (isset($_POST['btnSubmit']))
+		if (isset($_POST['alignment_id']))
 		{
 			$id = $this->input->post('alignment_id');
-			$desc = $this->input->post('alignment_description');
+			$desc = $this->input->post('edit_description');
 
 			$a = new Alignment();
 			$a->where('id', $id)->get();
@@ -130,9 +130,9 @@ class Alignments extends MX_Controller {
 
 	function delete_alignment_ajax()
 	{
-		if (isset($_POST['btnSubmit']))
+		if (isset($_POST['alignment_delete_id']))
 		{
-			$id = $this->input->post('alignment_id');
+			$id = $this->input->post('alignment_delete_id');
 
 			$a = new Alignment();
 			$a->where('id', $id)->get();
@@ -147,5 +147,10 @@ class Alignments extends MX_Controller {
 		{
 			redirect("/alignments/index");
 		}
+	}
+
+	function ajax_test()
+	{
+		echo "Sent: " . $this->input->post("alignment_description");
 	}
 }

@@ -6,11 +6,11 @@
 
 	<link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>css/forms/screen.css">
 	<link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>css/forms/dropdown.css">
-	<link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>css/forms/button.css">
 
 	<link href="<?php echo base_url(); ?>css/validate/validationEngine.jquery.css" rel="stylesheet" type="text/css" />
 
 	<link href="<?php echo base_url(); ?>css/stylesheet.css" rel="stylesheet" type="text/css" />
+	<link href="<?php echo base_url(); ?>css/see-modules/see.alignments.css" rel="stylesheet" type="text/css" />
 
 	<!-- <script type="text/javascript" src="<?php echo base_url(); ?>js/forms/helpers.js"></script> -->
 	<!-- <script type="text/javascript" src="<?php echo base_url(); ?>js/forms/date.js"></script> -->
@@ -19,217 +19,141 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/jquery-ui.min.js"></script>
 
+	<script type="text/javascript" src="<?php echo base_url(); ?>js/forms/jquery.form.js"></script>
+
 	<script type="text/javascript" src="<?php echo base_url(); ?>js/jquery.inputhints.min.js"></script>
 
 	<script type="text/javascript" src="<?php echo base_url(); ?>js/validate/languages/jquery.validationEngine-en.js"></script>
 	<script type="text/javascript" src="<?php echo base_url(); ?>js/validate/jquery.validationEngine.js"></script>
 
+	<script type="text/javascript" src="<?php echo base_url(); ?>js/see.general.js"></script>
+	<script type="text/javascript" src="<?php echo base_url(); ?>js/see-modules/see.alignments.js"></script>
+
 	<script>
 	$(function() {
-		$("#frmAddAlignment").validationEngine();
-		$("#frmUpdateAlignment").validationEngine();
-
-		//$("input[title]").inputHints();
-
-		$('.submitBtn2').hover(
-			// mouseover
-			function(){ $(this).addClass('submitBtnHover'); },
-				
-			// mouseout
-			function(){ $(this).removeClass('submitBtnHover'); }
-		);
-
-		$("#btnSubmit").click(function(e) {
-			e.preventDefault();
-
-			if ($("#frmAddAlignment").validationEngine("validate"))
-			{
-				$.post("<?php echo base_url(); ?>index.php/alignments/add_alignment_ajax",
-					{
-						"btnSubmit"		: "TRUE",
-						"alignment_description"	: $("#alignment_description").val()
-					},
-					function(data) {
-						clear_flash();
-
-						var alignment = jQuery.parseJSON(data);
-
-						if (alignment.success == 1 || alignment.success == "1")
-						{
-							var new_item = "<li>";
-							new_item += "<a href='#' class='alignment_name'>" + $("#alignment_description").val() + "</a>";
-							new_item += "<input type='hidden' value='" + alignment.id + "' />";
-							new_item += "</li>";
-
-							$("#alignments").append(new_item);
-
-							$("#flash").show().fadeIn(400).addClass("message_success").html(alignment.message).delay(5000).fadeOut(1000);
-						}
-						else
-						{
-							$("#flash").show().fadeIn(400).addClass("message_error").html(alignment.message).delay(5000).fadeOut(1000);
-						}
-
-						$("#alignment_description").val('');
-					}
-				);
-			}
-		});
+		alignment_init();
 
 		if ($("#flash").html() != "")
 		{
 			$("#flash").addClass("has_messages");
 		}
 
-		$("#editAlignmentDialog").dialog({
-			autoOpen: false,
-			resizable: false,
-			buttons: {
-				"Update": function() {
-					if ($("#frmUpdateAlignment").validationEngine("validate"))
-					{
-						$.post("<?php echo base_url(); ?>index.php/alignments/update_alignment_ajax",
-							{
-								"btnSubmit"		: "TRUE",
-								"alignment_id"		: $("#alignment_id").val(),
-								"alignment_description"	: $("#edit_description").val()
-							},
-							function(data) {
-								clear_flash();
+		$(".list_button, .list_button2").button();
 
-								var alignment = jQuery.parseJSON(data);
+		$(".alignment_delete_check").live("click", function() {
+			$(this).parent().toggleClass("marked_for_delete");
 
-								if (alignment.success == 1 || alignment.success == "1")
-								{
-									$(".editing").text($("#edit_description").val()).removeClass("editing");
+			control_buttons_check();
 
-									$("#flash").show().fadeIn(400).addClass("message_success").html(alignment.message).delay(5000).fadeOut(1000);
-								}
-								else
-								{
-									$("#flash").show().fadeIn(400).addClass("message_error").html(alignment.message).delay(5000).fadeOut(1000);
-								}
-
-								$("#editAlignmentDialog").dialog("close");
-							}
-						);
-					}
-				},
-				"Delete": function() {
-					$("#confirmDeleteAlignmentDialog").find("span").last().text($("#edit_description").val());
-					$("#confirmDeleteAlignmentDialog").dialog("open");
-				},
-				Cancel: function() {
-					$(".editing").removeClass("editing");
-
-					$(this).dialog("close");
-				}
+			if ($(".alignment_delete_check:checked").length == 0)
+			{
+				clear_mass_change_table();
 			}
 		});
 
-		$("#confirmDeleteAlignmentDialog").dialog({
-			autoOpen: false,
-			resizable: false,
-			height: 190,
-			modal: true,
-			buttons: {
-				"Delete Alignment": function() {
-					$.post("<?php echo base_url(); ?>index.php/alignments/delete_alignment_ajax",
-						{
-							"btnSubmit"	: "TRUE",
-							"alignment_id"	: $("#alignment_id").val()
-						},
-						function(data) {
-							clear_flash();
+		$("#btnEditAlignments").click(function() {
+			$(".alignment_delete_check:checked").each(function() {
+				var to_append = false;
 
-							$("#flash").show().fadeIn(400).addClass("message_success").html(data).delay(5000).fadeOut(1000);
-
-							$(".editing").parent().remove();
-						}
-					);
-
-					$(this).dialog("close");
-					$("#editAlignmentDialog").dialog("close");
-				},
-				Cancel: function() {
-					$(this).dialog("close");
+				if ($("#alignment_mass_changes tbody tr td").children().first().val() != "")
+				{
+					var new_row = $("#alignment_mass_changes").children("tbody").children().first().clone();
+					to_append = true;
 				}
-			}
+				else
+				{
+					var new_row = $("#alignment_mass_changes tbody").children().first();
+				}
+
+				var alignment_id = $(this).siblings("input").val();
+				var alignment = $(this).siblings(".item_name").text();
+
+				new_row.children().first().text(alignment);
+
+				var inputs = new_row.children().last().children();
+				inputs.first().val(alignment);
+				inputs.last().val(alignment_id);
+
+				if (to_append)
+				{
+					$("#alignment_mass_changes tbody").append(new_row);
+				}
+			});
+
+			$("#massEditAlignmentsDialog").dialog("open");
 		});
 
-		$(".alignment_name").live("click", function(e) {
+		$("#btnMassClear").button().click(function(e) {
 			e.preventDefault();
 
-			$(this).addClass("editing");
+			$("#massEditAlignmentsDialog").dialog("close");
 
-			var alignment = $(this).text();
-			var alignment_id = $(this).next().val();
-
-			$("#edit_description").val(alignment);
-			$("#alignment_id").val(alignment_id);
-
-			$("#editAlignmentDialog").dialog("open");
+			clear_mass_change_table();
+			control_buttons_check();
 		});
-		
-		$(".list_button, .list_button2").button();
+
+		$("#massEditAlignmentsDialog").dialog({
+			autoOpen: false
+		});		
 	});
 
-	function clear_flash()
+	function control_buttons_check()
 	{
-		$("#flash").empty();
+		var num_checked = $(".alignment_delete_check:checked").length;
 
-		if ($("#flash").hasClass("message_success"))
+		if (num_checked == 0 && $("#btnDeleteAlignments").is(":visible"))
 		{
-			$("#flash").removeClass("message_success");
+			$("#btnEditAlignments").hide();
+			$("#btnDeleteAlignments").hide();
 		}
+		else if (num_checked > 0 && $("#btnDeleteAlignments").not(":visible"))
+		{
+			$("#btnEditAlignments").show();
+			$("#btnDeleteAlignments").show();
+		}
+	}
 
-		if ($("#flash").hasClass("message_error"))
-		{
-			$("#flash").removeClass("message_error");
-		}
+	function clear_mass_change_table()
+	{
+		// First clone a row to empty and reinsert
+		var save_row = $("#alignment_mass_changes").children("tbody").children().first().clone();
+
+		// Empty contents of cloned row
+		save_row.children().first().text("");
+		
+		var inputs = save_row.children().last().children();
+		inputs.first().val("");
+		inputs.last().val("");
+
+		// Remove all tbody rows
+		$("#alignment_mass_changes").children("tbody").empty();
+
+		// Append "cleaned" row
+		$("#alignment_mass_changes").children("tbody").append(save_row);
+
+		// Uncheck checkboxes
+		$(".alignment_delete_check:checked").each(function() {
+			$(this).trigger("click");
+		});
 	}
 	</script>
-	
+
 	<style>
-	#alignments {
-		list-style: none;
+	table {
+		border: 1px solid black;
+		border-collapse:collapse;
+		width: 100%;
 	}
-	
-	.alignment_name {
-		font-size: 16px;
-		margin-right: 15px;
-		text-decoration: none;
-	}
-	
-	#test_list {
-		list-style: none;
-		width: 30%;
-	}
-	
-	#test_list li {
-		display: block;
-		line-height: 20px;
-		margin-bottom: 5px;
+
+	th, td {
+		border: 1px solid black;
 		padding: 5px;
+		text-align: center;
+		width: 50%;
 	}
-	
-	#test_list li input {
-		width: auto;
-		margin: 0px 25px 0px 15px;
-		vertical-align: middle;
-	}
-	
-	.item_name {
-		font-size: 18px;
-		vertical-align: middle;
-	}
-	
-	.list_button {
-		float: right;
-	}
-	
-	.clear {
-		clear: both;
+
+	td input {
+		width: 90%;		
 	}
 	</style>
 </head>
@@ -237,57 +161,39 @@
 	<div id="flash">
 		<?php echo $this->session->flashdata('form_message'); ?>
 	</div>
-	
-	<p>
+
+	<div>
 		<div class="list_header">
 			<h1>Alignments</h1>
-			<div class="list_buttons2">
-				<button class="list_button2">Delete Checked</button>
-				<button class="list_button2">Add Alignment</button>
+			<div class="list_controls">
+				<button id="btnAddAlignment" class="list_button2">Add Alignment</button>
+				<button id="btnEditAlignments" class="list_button2 hide">Edit Checked</button>
+				<button id="btnDeleteAlignments" class="list_button2 hide">Delete Checked</button>			
 				<div class="clear"></div>
 			</div>
 			<div class="clear"></div>
 		</div>
-		<ul id="test_list">
-			<li>
-				<input type="checkbox" name="delete[]" class="delete_check" value="1" />
-				<span class="item_name">Face</span>
-				<button class="list_button delete_item">Delete</button>
-				<button class="list_button edit_item">Edit</button>
-				<div class="clear"></div>
-			</li>
-			
-			<li>
-				<input type="checkbox" name="delete[]" class="delete_check" value="1" />
-				<span class="item_name">Heel</span>
-				<button class="list_button delete_item">Delete</button>
-				<button class="list_button edit_item">Edit</button>
-				<div class="clear"></div>
-			</li>
-		</ul>
-	</p>
-
-	<p>		
-		<h3>Alignments</h3>
 		<ul id="alignments">
 			<?php if ($num_alignments != 0): ?>
 				<?php foreach ($alignments as $alignment): ?>
 			<li>
-				<a href="#" class="alignment_name"><?php echo $alignment->description; ?></a>
+				<input type="checkbox" name="delete_alignment[]" class="alignment_delete_check" value="1" />
+				<span class="item_name"><?php echo $alignment->description; ?></span>
 				<input type="hidden" value="<?php echo $alignment->id; ?>" />
+				<button class="list_button delete_item">Delete</button>
+				<button class="list_button edit_item">Edit</button>
+				<div class="clear"></div>
 			</li>
 				<?php endforeach; ?>
 			<?php endif; ?>
 		</ul>
-		<?php if ($num_alignments == 0): ?>
-		<?php echo $alignments; ?>
-		<?php endif; ?>
-	</p>
+	</div>
 
-	<div class="formDiv">
+	<div id="addAlignmentDialog" title="Add Alignment">
 		<?php
 		$attr = array("id" => "frmAddAlignment");
-		echo form_open("alignments/add_alignment", $attr);
+		//echo form_open("alignments/add_alignment", $attr);
+		echo form_open("alignments/add_alignment_ajax", $attr);
 
 		echo form_fieldset("Add Alignment");
 
@@ -310,10 +216,6 @@
 			"name"	=> "btnSubmit"
 		);
 		echo form_submit($attr, 'Add Name');
-		?>
-		&nbsp;&nbsp;&nbsp;
-		<button value="submit" name="btnSubmit2" id="btnSubmit2" class="submitBtn" type="submit"><span>Submit</span></button> 
-		<?php
 		echo form_close();
 		?>
 	</div>
@@ -321,7 +223,7 @@
 	<div id="editAlignmentDialog" title="Edit Alignment">
 		<?php
 		$attr = array("id" => "frmUpdateAlignment");
-		echo form_open("alignments/add_alignment", $attr);
+		echo form_open("alignments/update_alignment_ajax", $attr);		
 		echo form_label('Alignment: ', 'edit_description');
 		$data = array(
 			'name'	=> "edit_description",
@@ -342,6 +244,48 @@
 			<span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>
 			"<span></span>" will be permanently deleted. Are you sure?
 		</p>
+
+		<?php
+		unset($attr);
+		$attr = array("id" => "frmDeleteAlignment");
+		echo form_open("alignments/delete_alignment_ajax", $attr);
+		?>
+		<input type="hidden" name="alignment_delete_id" id="alignment_delete_id" value="" />
+		<?php
+		echo form_close();
+		?>
+	</div>
+
+	<div id="massEditAlignmentsDialog" title="Mass Edit Alignments">
+		<?php
+		$attr = array("id" => "frmMassUpdateAlignment");
+		echo form_open("alignments/update_alignment_ajax", $attr);
+		?>
+
+		<table id="alignment_mass_changes">
+			<thead>
+				<tr>
+					<th>Original</th>
+					<th>New</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td></td>
+					<td class="change_data">
+						<input type="text" value="" />
+						<input type="hidden" value="" />
+					</td>
+				</tr>
+			</tbody>
+		</table>
+
+		<br /><br />
+
+		<button id="btnMassClear">Clear</button>
+		<?php
+		echo form_close();
+		?>
 	</div>
 </body>
 </html>
