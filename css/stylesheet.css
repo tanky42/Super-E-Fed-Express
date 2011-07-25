@@ -1,7 +1,7 @@
-@import url(http://fonts.googleapis.com/css?family=Varela+Round&v2);
+@import url(http://fonts.googleapis.com/css?family=Varela+Round|Varela|Oswald|Michroma&v2);
 
 body {
-	font-family: "Varela Round", sans-serif;
+	font-family: "Michroma", sans-serif;
 	font-size: 14px;
 	margin: 40px;
 }
