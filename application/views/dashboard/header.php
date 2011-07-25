@@ -4,7 +4,6 @@
 	<title><?php echo $page_title; ?></title>
 	<link href="<?php echo base_url(); ?>css/jquery-ui/smoothness/jquery-ui.css" rel="stylesheet" type="text/css" />
 	<link href="<?php echo base_url(); ?>css/stylesheet.css" rel="stylesheet" type="text/css" />
-	<link href='http://fonts.googleapis.com/css?family=Varela+Round&v2' rel='stylesheet' type='text/css'>
 
 	<!-- Script to enable HTML5 compatibility in IE -->
 	<!--[if lt IE 9]><script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
