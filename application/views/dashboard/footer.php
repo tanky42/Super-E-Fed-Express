@@ -1,7 +1,7 @@
 	</section>
 
 	<footer>
-		Copyright 3RC
+		Copyright 3RC&copy;
 	</footer>
 </body>
 </html>
