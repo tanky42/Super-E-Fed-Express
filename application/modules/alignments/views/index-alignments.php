@@ -84,12 +84,48 @@
 
 			$("#btnMassEdit").button().click(function(e) {
 				e.preventDefault();
-
+				
 				var ajax_url = $(this).parent().attr("action");
-
+				var formData = $("#frmMassUpdateAlignment").serialize();
+				
 				$.post(ajax_url, formData,
 					function(data) {
-						alert("Mass Data:\n" + data);
+						var alignment = jQuery.parseJSON(data);
+						
+						if (alignment.success == 1)
+						{
+							$("#alignments_list").empty().html(alignment.list).find("button").button();
+			
+							var alignment_ids = jQuery.parseJSON(alignment.id);
+			
+							$.each(alignment_ids, function(k, v) {
+								$("#alignments").children().each(function() {
+									if ($(this).children("input").last().val() == v)
+									{
+										$(this).addClass("new_item").delay(5000)
+											.switchClass("new_item", "temp_class", 1000, "easeOutBounce", function() {
+												$(".temp_class").removeClass("temp_class");
+											}).children("button").button();
+									}
+								});
+							});				
+			
+							$("#flash").show().fadeIn(400).addClass("message_success").html(alignment.message).delay(5000)
+								.switchClass("message_success", "temp_class", 1000, "easeOutBounce", function() {
+									$(".temp_class").removeClass("temp_class");
+									$("#flash").empty();
+								});
+						}
+						else
+						{
+							$("#flash").show().fadeIn(400).addClass("message_error").html(alignment.message).delay(5000)
+								.switchClass("message_error", "temp_class", 1000, "easeOutBounce", function() {
+									$(".temp_class").removeClass("temp_class");
+									$("#flash").empty();
+								});
+						}
+			
+						$("#massEditAlignmentsDialog").dialog("close");
 					}
 				);
 			});
