@@ -26,12 +26,6 @@ class Alignments extends MX_Controller {
 		// Load Index
 		$this->load->view('index-alignments', $data);
 
-		// Load Dialogs
-		//$this->load->view('dialog-add-alignment');
-		//$this->load->view('dialog-edit-alignment');
-		//$this->load->view('dialog-confirm-delete-alignment');
-		//$this->load->view('dialog-mass-edit-alignments');
-
 		// Load Footer
 		$this->load->view('../../../views/dashboard/footer');
 	}
@@ -75,6 +69,11 @@ class Alignments extends MX_Controller {
 		$this->load->view('dialog-mass-edit-alignments');
 	}
 
+	function get_mass_delete_dialog()
+	{
+		$this->load->view('dialog-mass-delete-alignments');
+	}
+
 	/*******************************************************************
 		Ajax Functions
 	*******************************************************************/
@@ -88,17 +87,27 @@ class Alignments extends MX_Controller {
 			$a = new Alignment();
 			$a->description = $desc;
 
+			$new_items = '';
+
 			if ($a->save())
 			{
 				$list = $this->display_alignment_list();
 
 				$message = "<p>$desc was successfully saved</p>";
 
+				$new_items .= '<li class="new_item">';
+				$new_items .= '<input type="checkbox" name="delete_alignment[]" class="alignment_delete_check" value="1" />';
+				$new_items .= '<span class="item_name">' . $a->description . '</span>';
+				$new_items .= '<input type="hidden" value="' . $a->id . '" />';
+				$new_items .= '<button class="list_button delete_item">Delete</button>';
+				$new_items .= '<button class="list_button edit_item">Edit</button>';
+				$new_items .= '<div class="clear"></div>';
+				$new_items .= '</li>';
+
 				$data = array(
 					'success'	=> 1,
 					'message'	=> $message,
-					'id'		=> $a->id,
-					'list'		=> $list
+					'new_items'	=> $new_items
 				);
 				
 			}
@@ -138,7 +147,7 @@ class Alignments extends MX_Controller {
 
 			$success = 0;
 			$message = "";
-			$ids = array();
+			$info = array();
 
 			$idx = 0;
 
@@ -153,7 +162,11 @@ class Alignments extends MX_Controller {
 				{
 					$success = 1;
 					$message .= "<p>$desc[$idx] was successfully updated</p>";
-					$ids[] = $a->id;				
+
+					$info[] = array(
+						'id'	=> $a->id,
+						'desc'	=> $desc[$idx]
+					);
 				}
 				else
 				{
@@ -164,15 +177,12 @@ class Alignments extends MX_Controller {
 				$idx++;
 			}
 
-			$ids = json_encode($ids);
-
-			$list = $this->display_alignment_list();
+			$info = json_encode($info);
 
 			$data = array(
 				"success"	=> $success,
 				"message"	=> $message,
-				"id"		=> $ids,
-				"list"		=> $list
+				"info"		=> $info
 			);
 
 			echo json_encode($data);
@@ -187,16 +197,37 @@ class Alignments extends MX_Controller {
 	{
 		if (isset($_POST['alignment_delete_id']))
 		{
-			$id = $this->input->post('alignment_delete_id');
+			if (!is_array($_POST['alignment_delete_id']))
+			{
+				$id = array($this->input->post('alignment_delete_id'));
+			}
+			else
+			{
+				$id = $this->input->post('alignment_delete_id');
+			}
 
-			$a = new Alignment();
-			$a->where('id', $id)->get();
+			$message = '';
 
-			$desc = $a->description;
+			foreach ($id as $item)
+			{
+				$a = new Alignment();
+				$a->where('id', $item)->get();
 
-			$a->delete();
+				$desc = $a->description;
 
-			echo "<p>$desc has been deleted</p>";
+				$a->delete();
+
+				$message .= "<p>$desc has been deleted</p>";
+			}
+
+			$list = $this->display_alignment_list();
+
+			$data = array(
+				"message"	=> $message,
+				"list"		=> $list
+			);
+
+			echo json_encode($data);
 		}
 		else
 		{

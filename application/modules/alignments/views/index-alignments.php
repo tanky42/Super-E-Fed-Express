@@ -26,153 +26,68 @@
 			if ($("#flash").html() != "")
 			{
 				$("#flash").addClass("has_messages");
-			}
-
-			$(".list_button, .list_button2").button();
+			}			
 
 			$(".alignment_delete_check").live("click", function() {
-				$(this).parent().toggleClass("marked_for_delete");
+				$(this).parent().toggleClass("marked_for_mass");
 
 				control_buttons_check();
 
 				if ($(".alignment_delete_check:checked").length == 0)
 				{
-					clear_mass_change_table();
+					clear_mass_edit_table();
 				}
 			});
 
-			$("#btnEditAlignments").click(function() {
-				$(".alignment_delete_check:checked").each(function() {
-					var to_append = false;
+			if ($("#temp_input").length == 0)
+			{
+				$("#main").append("<input type='hidden' id='temp_input' value='' />");
+			}
 
-					if ($("#alignment_mass_changes tbody tr td").children().first().val() != "")
-					{
-						var new_row = $("#alignment_mass_changes").children("tbody").children().first().clone();
-						to_append = true;
-					}
-					else
-					{
-						var new_row = $("#alignment_mass_changes tbody").children().first();
-					}
+			$(".item_name").live("dblclick", function() {
+				if ($(".inline-editing").length > 0)
+				{
+					cancel_inline_edit();
+				}
 
-					var alignment_id = $(this).siblings("input").val();
-					var alignment = $(this).siblings(".item_name").text();
+				$(this).parent().addClass("marked_for_mass");
 
-					new_row.children().first().text(alignment);
+				var orig_val = $(this).text();
 
-					var inputs = new_row.children().last().children();
-					inputs.first().val(alignment);
-					inputs.last().val(alignment_id);
+				$("#temp_input").val(orig_val);
+				$(this).addClass("inline-editing");
+				$(this).html("<input type='text' id='replace_input' value='" + orig_val + "' />");
 
-					if (to_append)
-					{
-						$("#alignment_mass_changes tbody").append(new_row);
-					}
-				});
-
-				$("#massEditAlignmentsDialog").dialog("open");
+				// Hide delete button and create cancel button
+				$(this).siblings(".delete_item").hide();
+				$(this).siblings(".edit_item").before('<button id="btnCancelInline" class="list_button">Cancel</button>');
+				$(this).siblings(".edit_item").addClass("temp_edit_button").removeClass("edit_item");
+				$("#btnCancelInline").button();
 			});
 
-			$("#btnMassClear").button().click(function(e) {
-				e.preventDefault();
-
-				$("#massEditAlignmentsDialog").dialog("close");
-
-				clear_mass_change_table();
-				control_buttons_check();
+			$("#btnCancelInline").live("click", function() {
+				cancel_inline_edit();
 			});
 
-			$("#btnMassEdit").button().click(function(e) {
-				e.preventDefault();
-				
-				var ajax_url = $(this).parent().attr("action");
-				var formData = $("#frmMassUpdateAlignment").serialize();
-				
-				$.post(ajax_url, formData,
-					function(data) {
-						var alignment = jQuery.parseJSON(data);
-						
-						if (alignment.success == 1)
-						{
-							$("#alignments_list").empty().html(alignment.list).find("button").button();
-			
-							var alignment_ids = jQuery.parseJSON(alignment.id);
-			
-							$.each(alignment_ids, function(k, v) {
-								$("#alignments").children().each(function() {
-									if ($(this).children("input").last().val() == v)
-									{
-										$(this).addClass("new_item").delay(5000)
-											.switchClass("new_item", "temp_class", 1000, "easeOutBounce", function() {
-												$(".temp_class").removeClass("temp_class");
-											}).children("button").button();
-									}
-								});
-							});				
-			
-							$("#flash").show().fadeIn(400).addClass("message_success").html(alignment.message).delay(5000)
-								.switchClass("message_success", "temp_class", 1000, "easeOutBounce", function() {
-									$(".temp_class").removeClass("temp_class");
-									$("#flash").empty();
-								});
-						}
-						else
-						{
-							$("#flash").show().fadeIn(400).addClass("message_error").html(alignment.message).delay(5000)
-								.switchClass("message_error", "temp_class", 1000, "easeOutBounce", function() {
-									$(".temp_class").removeClass("temp_class");
-									$("#flash").empty();
-								});
-						}
-			
-						$("#massEditAlignmentsDialog").dialog("close");
-					}
-				);
-			});
+			$(".temp_edit_button").live("click", function() {
+				var desc = $("#replace_input").val();
+				var alignment_id = $(this).siblings("input").last().val();
 
-			$("#massEditAlignmentsDialog").dialog({
-				autoOpen: false
-			});	
+				$("#edit_description").val(desc);
+				$("#alignment_id").val(alignment_id);
+
+				$("#frmUpdateAlignment").submit();
+			});
 		});
 
-		function control_buttons_check()
+		function cancel_inline_edit()
 		{
-			var num_checked = $(".alignment_delete_check:checked").length;
-
-			if (num_checked == 0 && $("#btnDeleteAlignments").is(":visible"))
-			{
-				$("#btnEditAlignments").hide();
-				$("#btnDeleteAlignments").hide();
-			}
-			else if (num_checked > 0 && $("#btnDeleteAlignments").not(":visible"))
-			{
-				$("#btnEditAlignments").show();
-				$("#btnDeleteAlignments").show();
-			}
-		}
-
-		function clear_mass_change_table()
-		{
-			// First clone a row to empty and reinsert
-			var save_row = $("#alignment_mass_changes").children("tbody").children().first().clone();
-
-			// Empty contents of cloned row
-			save_row.children().first().text("");
-		
-			var inputs = save_row.children().last().children();
-			inputs.first().val("");
-			inputs.last().val("");
-
-			// Remove all tbody rows
-			$("#alignment_mass_changes").children("tbody").empty();
-
-			// Append "cleaned" row
-			$("#alignment_mass_changes").children("tbody").append(save_row);
-
-			// Uncheck checkboxes
-			$(".alignment_delete_check:checked").each(function() {
-				$(this).trigger("click");
-			});
+			$("#replace_input").remove();
+			$("#btnCancelInline").parent().removeClass("marked_for_mass");
+			$("#btnCancelInline").remove();
+			$(".inline-editing").siblings(".delete_item").show();
+			$(".temp_edit_button").addClass("edit_item").removeClass("temp_edit_button");
+			$(".inline-editing").html("").text($("#temp_input").val()).removeClass("inline-editing");
 		}
 		</script>
 		
@@ -197,6 +112,14 @@
 		.settings_list {
 			overflow: auto;
 		}
+
+		.mass-delete-remove {
+			float: right;
+		}
+
+		.dialog-notice {
+			display: inline-block;
+		}
 		</style>
 
 		<div id="alignments_list" class="settings_list">
@@ -214,3 +137,6 @@
 
 		<!-- Mass Edit Alignments Dialog -->
 		<?php echo Modules::run('alignments/get_mass_edit_dialog'); ?>
+
+		<!-- Mass Delete Alignments Dialog -->
+		<?php echo Modules::run('alignments/get_mass_delete_dialog'); ?>

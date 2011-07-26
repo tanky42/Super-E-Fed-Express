@@ -16,6 +16,10 @@
 	<header>
 		<h1>Super E-Fed Express</h1>
 
+		<div id="flash">
+			<?php echo $this->session->flashdata('form_message'); ?>
+		</div>
+
 		<nav>
 			<ul>
 				<li><a href="<?php echo base_url(); ?>index.php/alignments">Alignments</a></li>
@@ -24,6 +28,3 @@
 	</header>
 
 	<section id="main">
-		<div id="flash">
-			<?php echo $this->session->flashdata('form_message'); ?>
-		</div>

@@ -1,7 +1,12 @@
-@import url(http://fonts.googleapis.com/css?family=Varela+Round|Varela|Oswald|Michroma&v2);
+/*@import url(http://fonts.googleapis.com/css?family=Michroma&v2);*/
+
+@font-face {
+	font-family: Michroma;
+	src: url("Michroma-webfont.eot");
+}
 
 body {
-	font-family: "Michroma", sans-serif;
+	font-family: Michroma, sans-serif;
 	font-size: 14px;
 	margin: 40px;
 }
@@ -16,7 +21,16 @@ header {
 	left: 40px;
 }
 
+header h1 {
+	display: inline-block;
+	height: 60px;
+	padding-top: 15px;
+	text-align: center;
+	width: 34%;
+}
+
 header nav {
+	clear: both;
 	font-size: 18px;
 	text-align: center;
 }
@@ -36,7 +50,7 @@ header nav ul li {
 	padding: 0px 40px 0px 40px;
 	width: 88%;
 	position: fixed;
-	top: 140px;
+	top: 165px;
 }
 
 footer {
@@ -54,7 +68,10 @@ footer {
 }
 
 #flash {
-	width: 45%;
+	float: right;
+	height: 65px;
+	margin: 5px 5px 0 0;
+	width: 65%;
 }
 
 #flash p {

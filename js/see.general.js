@@ -30,3 +30,12 @@ function clear_flash()
 		$("#flash").removeClass("message_error");
 	}
 }
+
+function display_flash_message(theMessage, theClass)
+{
+	$("#flash").show().fadeIn(400).addClass(theClass).html(theMessage).delay(3000)
+		.switchClass(theClass, "temp_class", 1000, "easeOutBounce", function() {
+			$(".temp_class").removeClass("temp_class");
+			$("#flash").empty();
+		});
+}

@@ -32,6 +32,6 @@
 	float: right;
 }
 
-.edit_item {
+.edit_item, .temp_edit_button {
 	margin-right: 6px;
 }
