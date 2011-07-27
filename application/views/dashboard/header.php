@@ -11,12 +11,16 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/jquery-ui.min.js"></script>
 	<script type="text/javascript" src="<?php echo base_url(); ?>js/see.general.js"></script>
+
+	<script>
+	var base_url = "<?php echo base_url(); ?>";
+	</script>
 </head>
 <body>
 	<header>
 		<h1>Super E-Fed Express</h1>
 
-		<div id="flash">
+		<div id="flash" class="message_default">
 			<?php echo $this->session->flashdata('form_message'); ?>
 		</div>
 

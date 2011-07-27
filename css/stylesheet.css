@@ -63,6 +63,9 @@ footer {
 	left: 40px;
 }
 
+.ajax-loader {
+		margin-right: 25px;
+	}
 .hide {
 	display: none;
 }
@@ -77,6 +80,11 @@ footer {
 #flash p {
 	margin: 10px;
 	font-weight: bold;
+}
+
+.message_default {
+	background: #eee;
+	border: 1px solid #ccc;
 }
 
 .message_error {
@@ -94,7 +102,7 @@ footer {
 	border: 1px solid #FFC111;
 }
 
-.marked_for_delete {
+.marked_for_mass {
 	background: #CCFFFF;
 	border: 1px solid #CCCCFF;
 }

@@ -4,6 +4,7 @@ function alignment_init()
 	alignment_init_input_hints();
 	alignment_init_dialogs();
 	alignment_init_buttons();
+	alignment_init_events();
 	alignment_init_forms();
 }
 
@@ -218,8 +219,10 @@ function alignment_init_buttons()
 	alignment_single_delete_buttons();
 	alignment_mass_edit_button();
 	alignment_mass_delete_button();
+	set_inline_edit_buttons();
 
 	set_alignment_mass_changes_dialog_buttons();
+	set_alignment_mass_deletes_dialog_buttons();
 
 	$(".list_button, .list_button2").button();
 }
@@ -227,7 +230,8 @@ function alignment_init_buttons()
 function alignment_add_button()
 {
 	$("#btnAddAlignment").live("click", function() {
-		$("#addAlignmentDialog").dialog("open");
+		//$("#addAlignmentDialog").dialog("open");
+		$("#massAddAlignmentsDialog").dialog("open");
 	});
 }
 
@@ -300,6 +304,9 @@ function alignment_mass_delete_button()
 {
 	$("#btnDeleteAlignments").button().live("click", function() {
 		$(".alignment_delete_check:checked").each(function() {
+			// Add class to parent for easy removal from list
+			$(this).parent().addClass("to-delete");
+
 			var to_append = false;
 
 			if ($("#alignment_mass_deletes tbody tr td").children().first().text() != "")
@@ -318,7 +325,7 @@ function alignment_mass_delete_button()
 			var inputs = new_row.children().first().children();
 			inputs.first().text(alignment);
 			inputs.eq(1).val(alignment);
-			inputs.last().val(alignment_id);
+			inputs.eq(2).val(alignment_id);
 
 			if (to_append)
 			{
@@ -345,6 +352,42 @@ function set_alignment_mass_changes_dialog_buttons()
 	});
 }
 
+function set_alignment_mass_deletes_dialog_buttons()
+{
+	$("#btnMassDelete").button().live("click", function(e) {
+		e.preventDefault();
+
+		$("#frmMassDeleteAlignment").submit();
+	});
+}
+
+function set_inline_edit_buttons()
+{
+	$("#btnCancelInline").live("click", function() {
+		cancel_inline_edit();
+	});
+
+	$(".temp_edit_button").live("click", function() {
+		var desc = $("#replace_input").val();
+		var alignment_id = $(this).siblings("input").last().val();
+
+		$("#edit_description").val(desc);
+		$("#alignment_id").val(alignment_id);
+
+		$("#frmUpdateAlignment").submit();
+	});
+}
+
+function cancel_inline_edit()
+{
+	$("#replace_input").remove();
+	$("#btnCancelInline").parent().removeClass("marked_for_mass");
+	$("#btnCancelInline").remove();
+	$(".inline-editing").siblings(".delete_item").show();
+	$(".temp_edit_button").remove();
+	$(".inline-editing").html("").text($("#temp_input").val()).removeClass("inline-editing");
+}
+
 // Show/Hide mass edit/delete buttons
 function control_buttons_check()
 {
@@ -360,6 +403,57 @@ function control_buttons_check()
 		$("#btnEditAlignments").show();
 		$("#btnDeleteAlignments").show();
 	}
+}
+
+/********************************************************
+*							*
+*	Events						*
+*							*
+********************************************************/
+
+function alignment_init_events()
+{
+	alignment_inline_editing();
+	alignment_mass_change_checkboxes();
+}
+
+function alignment_inline_editing()
+{
+	$(".item_name").live("dblclick", function() {
+		if ($(".inline-editing").length > 0)
+		{
+			cancel_inline_edit();
+		}
+
+		$(this).parent().addClass("marked_for_mass");
+
+		var orig_val = $(this).text();
+
+		$("#temp_input").val(orig_val);
+		$(this).addClass("inline-editing");
+		$(this).html("<input type='text' id='replace_input' value='" + orig_val + "' />");
+
+		// Hide delete button and create cancel button
+		$(this).siblings(".delete_item").hide();
+		$(this).siblings(".delete_item").after('<button class="list_button edit_item">Edit</button>');
+		$(this).siblings(".delete_item").after('<button id="btnCancelInline" class="list_button">Cancel</button>');
+		$(this).siblings(".edit_item").addClass("temp_edit_button").removeClass("edit_item");
+		$("#btnCancelInline, .temp_edit_button").button();
+	});
+}
+
+function alignment_mass_change_checkboxes()
+{
+	$(".alignment_delete_check").live("click", function() {
+		$(this).parent().toggleClass("marked_for_mass");
+
+		control_buttons_check();
+
+		if ($(".alignment_delete_check:checked").length == 0)
+		{
+			clear_mass_edit_table();
+		}
+	});
 }
 
 /********************************************************
@@ -385,7 +479,8 @@ function alignment_add_form()
 	$("#frmAddAlignment").ajaxForm({
 		clearForm:	true,
 		resetForm:	true,
-		success: add_alignment_success
+		beforeSubmit:	display_ajax_loader,
+		success:	add_alignment_success
 	});
 }
 
@@ -396,7 +491,8 @@ function alignment_update_form()
 	$("#frmUpdateAlignment").ajaxForm({
 		clearForm:	true,
 		resetForm:	true,
-		success: edit_alignment_success
+		beforeSubmit:	display_ajax_loader,
+		success:	edit_alignment_success
 	});
 }
 
@@ -405,12 +501,18 @@ function alignment_delete_form()
 	$("#frmDeleteAlignment").ajaxForm({
 		clearForm:	true,
 		resetForm:	true,
-		success: delete_alignment_success
+		success:	delete_alignment_success
 	});
 }
 
 function alignment_mass_add_form()
 {
+	$("#frmMassAddeAlignment").ajaxForm({
+		clearForm:	true,
+		resetForm:	true,
+		beforeSubmit:	display_ajax_loader,
+		success:	add_alignment_success
+	});
 }
 
 function alignment_mass_edit_form()
@@ -418,12 +520,18 @@ function alignment_mass_edit_form()
 	$("#frmMassUpdateAlignment").ajaxForm({
 		clearForm:	true,
 		resetForm:	true,
-		success: edit_alignment_success
+		beforeSubmit:	display_ajax_loader,
+		success:	edit_alignment_success
 	});
 }
 
 function alignment_mass_delete_form()
 {
+	$("#frmMassDeleteAlignment").ajaxForm({
+		clearForm:	true,
+		resetForm:	true,
+		success:	delete_alignment_success
+	});
 }
 
 /********************************************************
@@ -434,23 +542,21 @@ function alignment_mass_delete_form()
 
 function add_alignment_success(responseText, statusText, xhr, $form)
 {
+	check_for_ajax_loader();
+
 	var alignment = jQuery.parseJSON(responseText);
 
 	if (alignment.success == 1)
 	{
 		$("#alignments").append(alignment.new_items).find("button").button();
 
-		$(".new_item").each(function() {
-			$(this).delay(3000).switchClass("new_item", "temp_class", 1000, "easeOutBounce", function() {
-					$(".temp_class").removeClass("temp_class");
-				}).children("button").button();
-		});
+		animate_list_item("new_item", "temp_class", 0, 0);
 
-		display_flash_message(alignment.message, "message_success");
+		display_flash_message(alignment.message, "message_success", true);
 	}
 	else
 	{
-		display_flash_message(alignment.message, "message_error");
+		display_flash_message(alignment.message, "message_error", true);
 	}
 
 	$form.parent().dialog("close");
@@ -458,38 +564,45 @@ function add_alignment_success(responseText, statusText, xhr, $form)
 
 function edit_alignment_success(responseText, statusText, xhr, $form)
 {
+	check_for_ajax_loader();
+
 	var alignment = jQuery.parseJSON(responseText);
 
 	if (alignment.success == 1)
 	{
 		var alignment_info = jQuery.parseJSON(alignment.info);
 
-		$.each(alignment_info[1], function(k, v) {
-			kalert("K: " + k + "\nV: " + v);
+		$.each(alignment_info, function(index) {
+			var updated_item = alignment_info[index];
+
+			if ($("#replace_input").length != 0)
+			{
+				//alert("inline");
+
+				$("#replace_input").remove();
+				$("#btnCancelInline").remove();
+				$(".temp_edit_button").remove();
+			}
 
 			$(".marked_for_mass").each(function() {
 				var myId = $(this).children("input").last().val();
 
-				alert ("My ID: " + myId + "\nItem ID: " + updated_item.id);
-
 				if (updated_item.id == myId)
 				{
-					$(this).children(".item_name").val(updated_item.desc);
+					$(this).children(".item_name").removeClass("inline-editing").text(updated_item.desc);
 				}
+
+				$(this).children(".delete_item").show();
 			});
 		});
 
-		$(".marked_for_mass").each(function() {
-			$(this).delay(3000).switchClass("marked_for_mass", "temp_class", 1000, "easeOutBounce", function() {
-					$(".temp_class").removeClass("temp_class");
-				}).children("button").button();
-		});
+		animate_list_item("marked_for_mass", "temp_class", 0, 0);
 
-		display_flash_message(alignment.message, "message_success");
+		display_flash_message(alignment.message, "message_success", true);
 	}
 	else
 	{
-		display_flash_message(alignment.message, "message_error");
+		display_flash_message(alignment.message, "message_error", true);
 	}
 
 	$form.parent().dialog("close");
@@ -497,11 +610,15 @@ function edit_alignment_success(responseText, statusText, xhr, $form)
 
 function delete_alignment_success(responseText, statusText, xhr, $form) 
 {
+	check_for_ajax_loader();
+
 	var alignment = jQuery.parseJSON(responseText);
 
-	$("#alignments_list").empty().html(alignment.list).find("button").button();
+	$(".to-delete").each(function() {
+		$(this).remove();
+	});
 
-	display_flash_message(alignment.message, "message_success");
+	display_flash_message(alignment.message, "message_success", true);
 
 	$form.parent().dialog("close");
 }

@@ -24,8 +24,8 @@
 						<td class="change_data">
 							<span></span>
 							<input type="hidden" name="alignment_description[]" value="" />
-							<input type="hidden" name="alignment_id[]" value="" />
-							<span class="ui-icon ui-icon-closethick mass-delete-remove"></span>
+							<input type="hidden" name="alignment_delete_id[]" value="" />
+							<span class="ui-icon ui-icon-closethick mass-remove-icon mass-delete-remove"></span>
 							<div class="clear"></div>
 						</td>
 					</tr>

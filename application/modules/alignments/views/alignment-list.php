@@ -16,7 +16,6 @@
 				<span class="item_name"><?php echo $alignment->description; ?></span>
 				<input type="hidden" value="<?php echo $alignment->id; ?>" />
 				<button class="list_button delete_item">Delete</button>
-				<button class="list_button edit_item">Edit</button>
 				<div class="clear"></div>
 			</li>
 				<?php endforeach; ?>

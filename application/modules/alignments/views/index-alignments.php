@@ -28,67 +28,59 @@
 				$("#flash").addClass("has_messages");
 			}			
 
-			$(".alignment_delete_check").live("click", function() {
-				$(this).parent().toggleClass("marked_for_mass");
-
-				control_buttons_check();
-
-				if ($(".alignment_delete_check:checked").length == 0)
-				{
-					clear_mass_edit_table();
-				}
-			});
-
 			if ($("#temp_input").length == 0)
 			{
 				$("#main").append("<input type='hidden' id='temp_input' value='' />");
 			}
 
-			$(".item_name").live("dblclick", function() {
-				if ($(".inline-editing").length > 0)
+			$("#massAddAlignmentsDialog").dialog({
+				autoOpen:	false
+			});
+
+			$("#btnMassAdd").button().live("click", function(e) {
+				e.preventDefault();
+
+				$("#frmMassAddeAlignment").submit();
+			});
+
+			$(".btnAdditionalRow").button().live("click", function(e) {
+				e.preventDefault();
+
+				// Clone first row of table body to duplicate
+				var table_body = $(this).siblings("table").first().children("tbody");
+				var new_row = table_body.children().first().clone();
+
+				// Clear row input
+				new_row.children().first().children().first().val("");
+
+				// Append new row to table body
+				table_body.append(new_row);
+			});
+
+			$(".mass-remove-icon").live("click", function() {
+				if ($(this).closest("tbody").children().length > 1)
 				{
-					cancel_inline_edit();
+					$(this).closest("tr").remove();
 				}
-
-				$(this).parent().addClass("marked_for_mass");
-
-				var orig_val = $(this).text();
-
-				$("#temp_input").val(orig_val);
-				$(this).addClass("inline-editing");
-				$(this).html("<input type='text' id='replace_input' value='" + orig_val + "' />");
-
-				// Hide delete button and create cancel button
-				$(this).siblings(".delete_item").hide();
-				$(this).siblings(".edit_item").before('<button id="btnCancelInline" class="list_button">Cancel</button>');
-				$(this).siblings(".edit_item").addClass("temp_edit_button").removeClass("edit_item");
-				$("#btnCancelInline").button();
+				else
+				{
+					$(this).closest("div").dialog("close");
+				}
 			});
 
-			$("#btnCancelInline").live("click", function() {
-				cancel_inline_edit();
-			});
+			$(".mass-delete-remove").live("click", function() {
+				var temp_id = $(this).prev().val();
 
-			$(".temp_edit_button").live("click", function() {
-				var desc = $("#replace_input").val();
-				var alignment_id = $(this).siblings("input").last().val();
+				$(".marked_for_mass").each(function() {
+					var mfm_id = $(this).children("input").last().val();
 
-				$("#edit_description").val(desc);
-				$("#alignment_id").val(alignment_id);
-
-				$("#frmUpdateAlignment").submit();
+					if (temp_id == mfm_id)
+					{
+						$(this).children("input").first().trigger("click");
+					}
+				});
 			});
 		});
-
-		function cancel_inline_edit()
-		{
-			$("#replace_input").remove();
-			$("#btnCancelInline").parent().removeClass("marked_for_mass");
-			$("#btnCancelInline").remove();
-			$(".inline-editing").siblings(".delete_item").show();
-			$(".temp_edit_button").addClass("edit_item").removeClass("temp_edit_button");
-			$(".inline-editing").html("").text($("#temp_input").val()).removeClass("inline-editing");
-		}
 		</script>
 		
 		<style>
@@ -113,12 +105,16 @@
 			overflow: auto;
 		}
 
-		.mass-delete-remove {
+		.mass-remove-icon {
 			float: right;
 		}
 
 		.dialog-notice {
 			display: inline-block;
+		}
+
+		.btnAdditionalRow {
+			margin-right: 25px;
 		}
 		</style>
 
