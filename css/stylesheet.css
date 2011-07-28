@@ -74,6 +74,7 @@ footer {
 	float: right;
 	height: 65px;
 	margin: 5px 5px 0 0;
+	overflow: auto;
 	width: 65%;
 }
 
@@ -103,6 +104,6 @@ footer {
 }
 
 .marked_for_mass {
-	background: #CCFFFF;
-	border: 1px solid #CCCCFF;
+	/*background: #CCFFFF;*/
+	/*border: 1px solid #CCCCFF;*/
 }

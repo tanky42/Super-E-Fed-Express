@@ -1,4 +1,4 @@
-		<div id="massDeleteAlignmentsDialog" title="Mass Delete Alignments">
+		<div id="massDeleteAlignmentsDialog" class="dialogDiv" title="Mass Delete Alignments">
 			<?php
 			$attr = array("id" => "frmMassDeleteAlignment");
 			echo form_open("alignments/delete_alignment_ajax", $attr);
@@ -34,7 +34,7 @@
 
 			<br /><br />
 
-			<button id="btnMassDelete">Delete</button>
+			<button id="btnMassDelete" class="btnSubmitForm">Delete</button>
 			<?php
 			echo form_close();
 			?>

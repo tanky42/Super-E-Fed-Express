@@ -18,6 +18,8 @@ function alignment_init_validation()
 {
 	$("#frmAddAlignment").validationEngine();
 	$("#frmUpdateAlignment").validationEngine();
+
+	//$("#frmMassAddAlignment").validationEngine();
 }
 
 /********************************************************
@@ -28,7 +30,10 @@ function alignment_init_validation()
 
 function alignment_init_input_hints()
 {
-	//$("input[title]").inputHints();
+	//$("form").myOverlay(2, 5);
+
+	$("#frmMassAddAlignment").myOverlay(2, 5);
+	//$("#frmMassUpdateAlignment").myOverlay(2, 5);
 }
 
 /********************************************************
@@ -39,38 +44,53 @@ function alignment_init_input_hints()
 
 function alignment_init_dialogs()
 {
-	alignment_add_dialog();
-	alignment_edit_dialog();
-	alignment_delete_dialog();
-
+	alignment_mass_add_dialog();
 	alignment_mass_edit_dialog();
+	alignment_delete_dialog();	
 	alignment_mass_delete_dialog();
 }
 
-function alignment_add_dialog()
+function alignment_mass_add_dialog()
 {
-	$("#addAlignmentDialog").dialog({
-		autoOpen: false
+	$("#massAddAlignmentsDialog").dialog({
+		autoOpen:	false,
+		open:		function() {
+			select_first_input_text($("#alignment_mass_add"));
+		},
+		close:		function() {
+			var theTable = $("#alignment_mass_add");
+			alignment_clear_mass_table(theTable);
+
+			control_buttons_check();
+		}
 	});
 }
 
-function alignment_edit_dialog()
+function alignment_mass_edit_dialog()
 {
-	$("#editAlignmentDialog").dialog({
-		autoOpen: false,
-		resizable: false,
-		buttons: {
-			"Update": function() {
-				if ($("#frmUpdateAlignment").validationEngine("validate"))
-				{
-					$("#frmUpdateAlignment").submit();
-				}
-			},
-			Cancel: function() {
-				$(".editing").removeClass("editing");
+	$("#massEditAlignmentsDialog").dialog({
+		autoOpen:	false,
+		open:		function() {
+			select_first_input_text($("#alignment_mass_edit"));
+		},
+		close:		function() {
+			var theTable = $("#alignment_mass_edit");
+			alignment_clear_mass_table(theTable);
 
-				$(this).dialog("close");
-			}
+			control_buttons_check();
+		}
+	});
+}
+
+function alignment_mass_delete_dialog()
+{
+	$("#massDeleteAlignmentsDialog").dialog({
+		autoOpen:	false,
+		close:		function() {
+			var theTable = $("#alignment_mass_deletes");
+			alignment_clear_mass_table(theTable);
+
+			control_buttons_check();
 		}
 	});
 }
@@ -93,30 +113,9 @@ function alignment_delete_dialog()
 	});
 }
 
-function alignment_mass_edit_dialog()
+function select_first_input_text(theTable)
 {
-	$("#massEditAlignmentsDialog").dialog({
-		autoOpen:	false,
-		close:		function() {
-			var theTable = $("#alignment_mass_changes");
-			alignment_clear_mass_table(theTable);
-
-			control_buttons_check();
-		}
-	});
-}
-
-function alignment_mass_delete_dialog()
-{
-	$("#massDeleteAlignmentsDialog").dialog({
-		autoOpen:	false,
-		close:		function() {
-			var theTable = $("#alignment_mass_deletes");
-			alignment_clear_mass_table(theTable);
-
-			control_buttons_check();
-		}
-	});
+	select_input_text(theTable.find("input").first());
 }
 
 /********************************************************
@@ -162,7 +161,7 @@ function alignment_clear_mass_table(theTable)
 function clear_mass_edit_table()
 {
 	// First clone a row to empty and reinsert
-	var save_row = $("#alignment_mass_changes").children("tbody").children().first().clone();
+	var save_row = $("#alignment_mass_edit").children("tbody").children().first().clone();
 
 	// Empty contents of cloned row
 	save_row.children().first().text("");
@@ -172,10 +171,10 @@ function clear_mass_edit_table()
 	inputs.last().val("");
 
 	// Remove all tbody rows
-	$("#alignment_mass_changes").children("tbody").empty();
+	$("#alignment_mass_edit").children("tbody").empty();
 
 	// Append "cleaned" row
-	$("#alignment_mass_changes").children("tbody").append(save_row);
+	$("#alignment_mass_edit").children("tbody").append(save_row);
 
 	// Uncheck checkboxes
 	$(".alignment_delete_check:checked").each(function() {
@@ -215,38 +214,20 @@ function clear_mass_delete_table()
 function alignment_init_buttons()
 {
 	alignment_add_button();
-	alignment_single_edit_buttons();
 	alignment_single_delete_buttons();
 	alignment_mass_edit_button();
 	alignment_mass_delete_button();
 	set_inline_edit_buttons();
 
-	set_alignment_mass_changes_dialog_buttons();
-	set_alignment_mass_deletes_dialog_buttons();
+	set_general_form_buttons();
 
-	$(".list_button, .list_button2").button();
+	$(".list_button, .list_button2, .btnSubmitForm, .btnClearForm, .btnAdditionalRow").button();
 }
 
 function alignment_add_button()
 {
 	$("#btnAddAlignment").live("click", function() {
-		//$("#addAlignmentDialog").dialog("open");
 		$("#massAddAlignmentsDialog").dialog("open");
-	});
-}
-
-function alignment_single_edit_buttons()
-{
-	$(".edit_item").live("click", function() {
-		var alignment_id = $(this).siblings("input").last().val();
-		$("#alignment_id").val(alignment_id);
-
-		var alignment = $(this).siblings(".item_name").text();
-		$("#edit_description").val(alignment);
-
-		$(this).siblings(".item_name").addClass("editing");
-
-		$("#editAlignmentDialog").dialog("open");
 	});
 }
 
@@ -271,14 +252,14 @@ function alignment_mass_edit_button()
 		$(".alignment_delete_check:checked").each(function() {
 			var to_append = false;
 
-			if ($("#alignment_mass_changes tbody tr td").children().first().val() != "")
+			if ($("#alignment_mass_edit tbody tr td").children().first().val() != "")
 			{
-				var new_row = $("#alignment_mass_changes").children("tbody").children().first().clone();
+				var new_row = $("#alignment_mass_edit").children("tbody").children().first().clone();
 				to_append = true;
 			}
 			else
 			{
-				var new_row = $("#alignment_mass_changes tbody").children().first();
+				var new_row = $("#alignment_mass_edit tbody").children().first();
 			}
 
 			var alignment_id = $(this).siblings("input").val();
@@ -292,7 +273,7 @@ function alignment_mass_edit_button()
 
 			if (to_append)
 			{
-				$("#alignment_mass_changes tbody").append(new_row);
+				$("#alignment_mass_edit tbody").append(new_row);
 			}
 		});
 
@@ -337,27 +318,32 @@ function alignment_mass_delete_button()
 	});
 }
 
-function set_alignment_mass_changes_dialog_buttons()
+function set_general_form_buttons()
 {
-	$("#btnMassClear").button().click(function(e) {
+	$(".btnSubmitForm").live("click", function(e) {
 		e.preventDefault();
 
-		$("#massEditAlignmentsDialog").dialog("close");
+		$(this).closest("form").submit();
 	});
 
-	$("#btnMassEdit").button().click(function(e) {
-		e.preventDefault();				
-				
-		$("#frmMassUpdateAlignment").submit();
-	});
-}
-
-function set_alignment_mass_deletes_dialog_buttons()
-{
-	$("#btnMassDelete").button().live("click", function(e) {
+	$(".btnClearForm").live("click", function(e) {
 		e.preventDefault();
 
-		$("#frmMassDeleteAlignment").submit();
+		$(this).closest(".dialogDiv").dialog("close");
+	});
+
+	$(".btnAdditionalRow").live("click", function(e) {
+		e.preventDefault();
+
+		// Clone first row of table body to duplicate
+		var table_body = $(this).siblings("table").first().children("tbody");
+		var new_row = table_body.children().first().clone();
+
+		// Clear row input
+		new_row.children().first().children().first().val("");
+
+		// Append new row to table body
+		table_body.append(new_row);
 	});
 }
 
@@ -415,17 +401,20 @@ function alignment_init_events()
 {
 	alignment_inline_editing();
 	alignment_mass_change_checkboxes();
+	alignment_inline_edit_hover();
 }
 
 function alignment_inline_editing()
 {
-	$(".item_name").live("dblclick", function() {
+	$(".item_name").live("dblclick", function(e) {
+		e.preventDefault();
+
 		if ($(".inline-editing").length > 0)
 		{
 			cancel_inline_edit();
 		}
 
-		$(this).parent().addClass("marked_for_mass");
+		$(this).parent().addClass("marked_for_mass").addClass("ui-state-highlight");;
 
 		var orig_val = $(this).text();
 
@@ -456,6 +445,16 @@ function alignment_mass_change_checkboxes()
 	});
 }
 
+function alignment_inline_edit_hover()
+{
+	$(".inline_edit").live("hover", function() {
+		if (!$(this).hasClass("marked_for_mass"))
+		{
+			$(this).toggleClass("ui-state-highlight");
+		}
+	});
+}
+
 /********************************************************
 *							*
 *	Forms						*
@@ -464,50 +463,15 @@ function alignment_mass_change_checkboxes()
 
 function alignment_init_forms()
 {
-	alignment_add_form();
-	alignment_update_form();
-	alignment_delete_form();
 	alignment_mass_add_form();
 	alignment_mass_edit_form();
+	alignment_delete_form();
 	alignment_mass_delete_form();
-}
-
-function alignment_add_form()
-{
-	var new_alignment = '';
-
-	$("#frmAddAlignment").ajaxForm({
-		clearForm:	true,
-		resetForm:	true,
-		beforeSubmit:	display_ajax_loader,
-		success:	add_alignment_success
-	});
-}
-
-function alignment_update_form()
-{
-	var updated_alignment = '';
-
-	$("#frmUpdateAlignment").ajaxForm({
-		clearForm:	true,
-		resetForm:	true,
-		beforeSubmit:	display_ajax_loader,
-		success:	edit_alignment_success
-	});
-}
-
-function alignment_delete_form()
-{
-	$("#frmDeleteAlignment").ajaxForm({
-		clearForm:	true,
-		resetForm:	true,
-		success:	delete_alignment_success
-	});
 }
 
 function alignment_mass_add_form()
 {
-	$("#frmMassAddeAlignment").ajaxForm({
+	$("#frmMassAddAlignment").ajaxForm({
 		clearForm:	true,
 		resetForm:	true,
 		beforeSubmit:	display_ajax_loader,
@@ -522,6 +486,15 @@ function alignment_mass_edit_form()
 		resetForm:	true,
 		beforeSubmit:	display_ajax_loader,
 		success:	edit_alignment_success
+	});
+}
+
+function alignment_delete_form()
+{
+	$("#frmDeleteAlignment").ajaxForm({
+		clearForm:	true,
+		resetForm:	true,
+		success:	delete_alignment_success
 	});
 }
 
@@ -550,7 +523,7 @@ function add_alignment_success(responseText, statusText, xhr, $form)
 	{
 		$("#alignments").append(alignment.new_items).find("button").button();
 
-		animate_list_item("new_item", "temp_class", 0, 0);
+		animate_list_item("new_item", "message_default", 0, 0);
 
 		display_flash_message(alignment.message, "message_success", true);
 	}
@@ -577,8 +550,6 @@ function edit_alignment_success(responseText, statusText, xhr, $form)
 
 			if ($("#replace_input").length != 0)
 			{
-				//alert("inline");
-
 				$("#replace_input").remove();
 				$("#btnCancelInline").remove();
 				$(".temp_edit_button").remove();
@@ -596,7 +567,7 @@ function edit_alignment_success(responseText, statusText, xhr, $form)
 			});
 		});
 
-		animate_list_item("marked_for_mass", "temp_class", 0, 0);
+		animate_list_item("marked_for_mass", "message_default", 0, 0);
 
 		display_flash_message(alignment.message, "message_success", true);
 	}
@@ -614,7 +585,7 @@ function delete_alignment_success(responseText, statusText, xhr, $form)
 
 	var alignment = jQuery.parseJSON(responseText);
 
-	$(".to-delete").each(function() {
+	$(".marked_for_mass").each(function() {
 		$(this).remove();
 	});
 

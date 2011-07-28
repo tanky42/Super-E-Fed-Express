@@ -49,20 +49,9 @@ class Alignments extends MX_Controller {
 		Display Dialogs
 	*******************************************************************/
 
-	function get_add_dialog()
+	function get_mass_add_dialog()
 	{
-		//$this->load->view('dialog-add-alignment');
 		$this->load->view('dialog-mass-add-alignments');
-	}
-
-	function get_edit_dialog()
-	{
-		$this->load->view('dialog-edit-alignment');
-	}
-
-	function get_delete_dialog()
-	{
-		$this->load->view('dialog-confirm-delete-alignment');
 	}
 
 	function get_mass_edit_dialog()
@@ -73,6 +62,11 @@ class Alignments extends MX_Controller {
 	function get_mass_delete_dialog()
 	{
 		$this->load->view('dialog-mass-delete-alignments');
+	}
+
+	function get_delete_dialog()
+	{
+		$this->load->view('dialog-confirm-delete-alignment');
 	}
 
 	/*******************************************************************

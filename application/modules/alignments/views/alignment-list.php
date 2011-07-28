@@ -11,7 +11,7 @@
 		<ul id="alignments">
 			<?php if ($num_alignments != 0): ?>
 				<?php foreach ($alignments as $alignment): ?>
-			<li>
+			<li class="inline_edit">
 				<input type="checkbox" name="delete_alignment[]" class="alignment_delete_check" value="1" />
 				<span class="item_name"><?php echo $alignment->description; ?></span>
 				<input type="hidden" value="<?php echo $alignment->id; ?>" />

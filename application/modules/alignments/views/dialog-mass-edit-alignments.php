@@ -1,10 +1,10 @@
-		<div id="massEditAlignmentsDialog" title="Mass Edit Alignments">
+		<div id="massEditAlignmentsDialog" class="dialogDiv" title="Mass Edit Alignments">
 			<?php
 			$attr = array("id" => "frmMassUpdateAlignment");
 			echo form_open("alignments/update_alignment_ajax", $attr);
 			?>
 
-			<table id="alignment_mass_changes">
+			<table id="alignment_mass_edit">
 				<thead>
 					<tr>
 						<th>Original</th>
@@ -24,11 +24,11 @@
 
 			<br /><br />
 
-			<button id="btnMassClear">Clear</button>
+			<button id="btnMassClear" class="btnClearForm">Clear</button>
 
 			&nbsp;&nbsp;&nbsp;
 
-			<button id="btnMassEdit">Make Changes</button>
+			<button id="btnMassEdit" class="btnSubmitForm">Make Changes</button>
 			<?php
 			echo form_close();
 			?>

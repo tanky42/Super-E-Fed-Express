@@ -1,6 +1,6 @@
-		<div id="massAddAlignmentsDialog" title="Mass Add Alignments">
+		<div id="massAddAlignmentsDialog" class="dialogDiv" title="Mass Add Alignments">
 			<?php
-			$attr = array("id" => "frmMassAddeAlignment");
+			$attr = array("id" => "frmMassAddAlignment");
 			echo form_open("alignments/add_alignment_ajax", $attr);
 			?>
 
@@ -21,8 +21,8 @@
 				<tbody>
 					<tr>
 						<td>
-							<input type="text" name="alignment_description[]" value="" />
 							<span class="ui-icon ui-icon-closethick mass-remove-icon mass-add-remove"></span>
+							<input type="text" class="form_input validate[required" name="alignment_description[]" value="" title="Alignment Name" />
 							<div class="clear"></div>
 						</td>
 					</tr>
@@ -32,7 +32,7 @@
 			<br /><br />
 
 			<button class="btnAdditionalRow">Add Row</button>
-			<button id="btnMassAdd">Add</button>
+			<button id="btnMassAdd" class="btnSubmitForm">Add</button>
 			<?php
 			echo form_close();
 			?>

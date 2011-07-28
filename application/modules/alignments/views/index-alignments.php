@@ -11,8 +11,6 @@
 
 		<script type="text/javascript" src="<?php echo base_url(); ?>js/forms/jquery.form.js"></script>
 
-		<script type="text/javascript" src="<?php echo base_url(); ?>js/jquery.inputhints.min.js"></script>
-
 		<script type="text/javascript" src="<?php echo base_url(); ?>js/validate/languages/jquery.validationEngine-en.js"></script>
 		<script type="text/javascript" src="<?php echo base_url(); ?>js/validate/jquery.validationEngine.js"></script>
 
@@ -32,30 +30,6 @@
 			{
 				$("#main").append("<input type='hidden' id='temp_input' value='' />");
 			}
-
-			$("#massAddAlignmentsDialog").dialog({
-				autoOpen:	false
-			});
-
-			$("#btnMassAdd").button().live("click", function(e) {
-				e.preventDefault();
-
-				$("#frmMassAddeAlignment").submit();
-			});
-
-			$(".btnAdditionalRow").button().live("click", function(e) {
-				e.preventDefault();
-
-				// Clone first row of table body to duplicate
-				var table_body = $(this).siblings("table").first().children("tbody");
-				var new_row = table_body.children().first().clone();
-
-				// Clear row input
-				new_row.children().first().children().first().val("");
-
-				// Append new row to table body
-				table_body.append(new_row);
-			});
 
 			$(".mass-remove-icon").live("click", function() {
 				if ($(this).closest("tbody").children().length > 1)
@@ -122,11 +96,8 @@
 			<?php echo Modules::run('alignments/display_alignment_list'); ?>
 		</div>
 
-		<!-- Add Alignment Dialog -->
-		<?php echo Modules::run('alignments/get_edit_dialog'); ?>
-
-		<!-- Edit Alignment Dialog -->
-		<?php echo Modules::run('alignments/get_add_dialog'); ?>
+		<!-- Mass Add Alignments Dialog -->
+		<?php echo Modules::run('alignments/get_mass_add_dialog'); ?>
 
 		<!-- Confirm Delete Alignment Dialog -->
 		<?php echo Modules::run('alignments/get_delete_dialog'); ?>

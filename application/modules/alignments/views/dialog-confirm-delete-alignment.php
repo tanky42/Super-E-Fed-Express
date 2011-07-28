@@ -1,4 +1,4 @@
-		<div id="confirmDeleteAlignmentDialog" title="Delete this alignment?">
+		<div id="confirmDeleteAlignmentDialog" class="dialogDiv" title="Delete this alignment?">
 			<p>
 				<span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>
 				"<span></span>" will be permanently deleted. Are you sure?
