@@ -3,6 +3,9 @@
 <head>
 	<title><?php echo $page_title; ?></title>
 	<link href="<?php echo base_url(); ?>css/jquery-ui/smoothness/jquery-ui.css" rel="stylesheet" type="text/css" />
+	<link href="<?php echo base_url(); ?>css/sheep/buttons.css" rel="stylesheet" type="text/css" />
+	<link href="<?php echo base_url(); ?>css/sheep/forms.css" rel="stylesheet" type="text/css" />
+	<link href="<?php echo base_url(); ?>css/validate/jquery.validval.css" rel="stylesheet" type="text/css" />
 	<link href="<?php echo base_url(); ?>css/stylesheet.css" rel="stylesheet" type="text/css" />
 
 	<!-- Script to enable HTML5 compatibility in IE -->
@@ -12,7 +15,9 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/jquery-ui.min.js"></script>
 
 	<!-- jQuery Plugins -->
-	<script type="text/javascript" src="<?php echo base_url(); ?>js/myOverlay.js"></script>
+	<script type="text/javascript" src="<?php echo base_url(); ?>js/sheep/jquery.sheepItPlugin-1.0.0.min.js"></script>
+	<script type="text/javascript" src="<?php echo base_url(); ?>js/validate/jquery.validVal-2.4.2.js"></script>
+	<script type="text/javascript" src="<?php echo base_url(); ?>js/validate/jquery.validVal-customValidations.js"></script>
 
 	<!-- Custom Scripts -->
 	<script type="text/javascript" src="<?php echo base_url(); ?>js/see.general.js"></script>

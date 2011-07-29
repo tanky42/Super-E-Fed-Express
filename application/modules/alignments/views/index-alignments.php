@@ -1,5 +1,5 @@
-		<link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>css/forms/screen.css">
-		<link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>css/forms/dropdown.css">
+		<!-- <link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>css/forms/screen.css"> -->
+		<!-- <link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>css/forms/dropdown.css"> -->
 
 		<link href="<?php echo base_url(); ?>css/validate/validationEngine.jquery.css" rel="stylesheet" type="text/css" />
 
@@ -11,13 +11,10 @@
 
 		<script type="text/javascript" src="<?php echo base_url(); ?>js/forms/jquery.form.js"></script>
 
-		<script type="text/javascript" src="<?php echo base_url(); ?>js/validate/languages/jquery.validationEngine-en.js"></script>
-		<script type="text/javascript" src="<?php echo base_url(); ?>js/validate/jquery.validationEngine.js"></script>
-
 		<script type="text/javascript" src="<?php echo base_url(); ?>js/see-modules/see.alignments.js"></script>
 
 		<script>
-		$(function() {
+		$(document).ready(function() {
 			init();
 			alignment_init();
 
@@ -53,6 +50,18 @@
 						$(this).children("input").first().trigger("click");
 					}
 				});
+			});
+
+			var sheepItForm = $("#frmMassAddAlignment").sheepIt({
+				separator:		"",
+				allowRemoveLast:	true,
+				allowRemoveCurrent:	true,
+				allowRemoveAll:		true,
+				allowAdd:		true,
+				allowAddN:		true,
+				maxFormsCount:		10,
+				minFormsCount:		0,
+				iniFormsCount:		2
 			});
 		});
 		</script>

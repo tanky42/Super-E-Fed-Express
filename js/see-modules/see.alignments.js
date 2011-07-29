@@ -16,10 +16,7 @@ function alignment_init()
 
 function alignment_init_validation()
 {
-	$("#frmAddAlignment").validationEngine();
-	$("#frmUpdateAlignment").validationEngine();
-
-	//$("#frmMassAddAlignment").validationEngine();
+	$("form").validVal();
 }
 
 /********************************************************
@@ -32,7 +29,7 @@ function alignment_init_input_hints()
 {
 	//$("form").myOverlay(2, 5);
 
-	$("#frmMassAddAlignment").myOverlay(2, 5);
+	//$("#frmMassAddAlignment").myOverlay(2, 5);
 	//$("#frmMassUpdateAlignment").myOverlay(2, 5);
 }
 
@@ -55,13 +52,13 @@ function alignment_mass_add_dialog()
 	$("#massAddAlignmentsDialog").dialog({
 		autoOpen:	false,
 		open:		function() {
-			select_first_input_text($("#alignment_mass_add"));
+			//select_first_input_text($("#alignment_mass_add"));
 		},
 		close:		function() {
-			var theTable = $("#alignment_mass_add");
-			alignment_clear_mass_table(theTable);
+			//var theTable = $("#alignment_mass_add");
+			//alignment_clear_mass_table(theTable);
 
-			control_buttons_check();
+			//control_buttons_check();
 		}
 	});
 }
@@ -332,6 +329,7 @@ function set_general_form_buttons()
 		$(this).closest(".dialogDiv").dialog("close");
 	});
 
+	/*
 	$(".btnAdditionalRow").live("click", function(e) {
 		e.preventDefault();
 
@@ -344,6 +342,11 @@ function set_general_form_buttons()
 
 		// Append new row to table body
 		table_body.append(new_row);
+	});
+	*/
+
+	$("#add_alignment_add").click(function(e) {
+		e.preventDefault();
 	});
 }
 

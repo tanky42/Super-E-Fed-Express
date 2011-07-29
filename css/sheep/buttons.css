@@ -1,0 +1,111 @@
+@charset "utf-8";
+
+/*
+=======================================================================================
+                               Base properties for all buttons
+=======================================================================================
+*/
+
+.btn {
+	margin:0px auto;
+	float:left;
+	display:block;
+}
+
+.btn a {
+	display:block;
+	float:none;
+	text-decoration:none;
+}
+
+
+/*
+=======================================================================================
+                                      Buttons
+=======================================================================================
+*/
+
+/* ------ preview big button ----- */
+.btn.previewButton {
+	font-family:arial, helvetica, sans-serif;
+	font-size:1.5em;
+	font-weight:bold;
+	
+	line-height:70px;
+	padding:0px 1px 0px 5px;
+	background-image: url(images/btn-preview-left.png);
+	background-repeat: no-repeat;
+	background-position: left top;
+	
+	width:200px;
+	
+	_background-image: url(images/btn-bg-ie.png);
+	_background-repeat: repeat-x;
+	_height:0.1%;
+	
+}
+
+.btn.previewButton:hover {
+	background-position:left bottom;
+}
+
+.btn.previewButton a {
+	/* This padding top and bottom + line-height = Total height of the bg image */
+	padding:4px 13px 4px 4px;
+	background-image: url(images/btn-preview-right.png) ;
+	background-position: right top;
+	background-repeat: no-repeat;
+	color:#fff;
+	text-shadow: -1px -1px 0 #666;
+
+	/* For ie */
+	_height:0.1%; /* Activate layout */
+	_background-image: url(images/btn-bg-ie.png);
+	_background-repeat: repeat-x;
+
+}
+
+.btn.previewButton a:hover {
+	background-position:right bottom; 
+	text-decoration:none;
+	color:#d0f67f;
+}
+
+
+
+
+/* ------ Buttons for forms ----- */
+.btn.form {
+	line-height:16px; 
+	padding:0 1px 0 5px;
+	background:url(images/btn_bg_left_grey.png) no-repeat left top;
+}
+
+.btn.form:hover {
+	background-position:left bottom;
+}
+
+.btn.form a {
+	padding:4px 13px 4px 4px;
+	background:url(images/btn_bg_grey.png) no-repeat right top;
+	color:#333;
+}
+
+.btn.form a:hover {
+	background-position:right bottom; 
+	text-decoration:none;
+	color:#000;
+}
+
+.btn.form span {
+	text-indent:20px;
+	display:block;
+}
+
+.btn.form.add span { background:url(images/add.png) no-repeat left center; }
+.btn.form.remove span { background:url(images/delete.png) no-repeat left center; }
+.btn.form.removeAll span { background:url(images/decline.png) no-repeat left center; }
+.btn.form.accept span { background:url(images/accept.png) no-repeat left center; }
+.btn.form.cancel span { background:url(images/delete.png) no-repeat left center; }
+.btn.form.examine span { background:url(images/disk-magnify.png) no-repeat left center; }
+
