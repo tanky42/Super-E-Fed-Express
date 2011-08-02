@@ -3,3 +3,5 @@ application/views/.DS_Store
 application/config/database.php
 license.txt
 css/.DS_Store
+
+application/modules/alignments/views/.DS_Store

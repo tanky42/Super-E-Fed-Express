@@ -32,8 +32,56 @@ function alignment_init_validation()
 
 function alignment_init_dialogs()
 {
+	alignment_mass_add_dialog();
+	alignment_mass_edit_dialog();
 	alignment_delete_dialog();	
 	alignment_mass_delete_dialog();
+}
+
+function alignment_mass_add_dialog()
+{
+	$("#massAddAlignmentsDialog").dialog({
+		autoOpen:	false,
+		close:		function() {
+			var theTable = $("#alignment_mass_add");
+			clear_sheep_table(theTable);
+			//alignment_clear_mass_table(theTable);
+			control_buttons_check();
+		},
+		buttons: {
+			"Add Alignment": function() {
+				$(this).find("form").submit();
+				$(this).dialog("hide");
+			},
+			Cancel: function() {
+				$(this).dialog("close");
+			}
+		}
+	});
+}
+
+function alignment_mass_edit_dialog()
+{
+	$("#massEditAlignmentsDialog").dialog({
+		autoOpen:	false,
+		open:		function() {
+			select_first_input_text($("#alignment_mass_edit"));
+		},
+		close:		function() {
+			var theTable = $(this).find("form").find("table");
+			alignment_clear_mass_table(theTable);
+			control_buttons_check();
+		},
+		buttons: {
+			"Edit Alignment": function() {
+				$(this).find("form").submit();
+				$(this).dialog("hide");
+			},
+			Cancel: function() {
+				$(this).dialog("close");
+			}
+		}
+	});
 }
 
 function alignment_mass_delete_dialog()
@@ -112,6 +160,66 @@ function clear_sheep_table(theTable)
 *							*
 ********************************************************/
 
+function alignment_clear_mass_table(theTable)
+{
+	// First clone a row to empty and reinsert
+	var save_row = theTable.children("tbody").children().first().clone();
+
+	// Empty contents of cloned row
+	save_row.children().each(function() {
+		// Clear contents of each cell
+		if ($(this).children().length == 0)
+		{
+			$(this).text("");
+		}
+		else
+		{
+			$(this).children("span").each(function() {
+				$(this).text("");
+			});
+
+			$(this).children("input").val("");
+		}
+	});
+
+	// Remove all tbody rows
+	theTable.children("tbody").empty();
+
+	// Append "cleaned" row
+	theTable.children("tbody").append(save_row);
+
+	// Uncheck checkboxes
+	$(".alignment_delete_check:checked").each(function() {
+		alert("Unchecking");
+
+		$(this).trigger("click").parent().removeClass("ui-state-highlight");
+	});
+}
+
+function clear_mass_edit_table()
+{
+	// First clone a row to empty and reinsert
+	var save_row = $("#alignment_mass_edit").children("tbody").children().first().clone();
+
+	// Empty contents of cloned row
+	save_row.children().first().text("");
+		
+	var inputs = save_row.children().last().children();
+	inputs.first().val("");
+	inputs.last().val("");
+
+	// Remove all tbody rows
+	$("#alignment_mass_edit").children("tbody").empty();
+
+	// Append "cleaned" row
+	$("#alignment_mass_edit").children("tbody").append(save_row);
+
+	// Uncheck checkboxes
+	$(".alignment_delete_check:checked").each(function() {
+		$(this).trigger("click");
+	});
+}
+
 function clear_mass_delete_list(theList)
 {
 	// First clone a row to empty and reinsert
@@ -130,7 +238,7 @@ function clear_mass_delete_list(theList)
 	theList.append(save_row);
 
 	// Uncheck checkboxes
-	$(".delete_check:checked").each(function() {
+	$(".alignment_delete_check:checked").each(function() {
 		$(this).trigger("click");
 	});
 
@@ -145,11 +253,9 @@ function clear_mass_delete_list(theList)
 
 function alignment_init_buttons()
 {
-	alignment_select_all();
-	alignment_deselect_all();
-
 	alignment_add_button();
 	alignment_single_delete_buttons();
+	alignment_mass_edit_button();
 	alignment_mass_delete_button();
 	set_inline_edit_buttons();
 
@@ -158,39 +264,10 @@ function alignment_init_buttons()
 	$(".list_button, .list_button2, .btnSubmitForm, .btnClearForm, .btnAdditionalRow").button();
 }
 
-function alignment_select_all()
-{
-	$(".btnSelectAll").button().live("click", function(e) {
-		e.preventDefault();
-
-		$(this).closest(".list_header").next().find(".delete_check").each(function() {
-			if (!$(this).attr("checked"))
-			{
-				$(this).trigger("click");
-			}
-		});
-	});
-}
-
-function alignment_deselect_all()
-{
-	$(".btnDeselectAll").button().live("click", function(e) {
-		e.preventDefault();
-
-		$(this).closest(".list_header").next().find(".delete_check").each(function() {
-			if ($(this).attr("checked"))
-			{
-				$(this).trigger("click");
-			}
-		});
-	});
-}
-
 function alignment_add_button()
 {
-	$("#btnAddAlignment").live("click", function(e) {
-		e.preventDefault();
-		$("#frmAddAlignment").submit();
+	$("#btnAddAlignment").live("click", function() {
+		$("#massAddAlignmentsDialog").dialog("open");
 	});
 }
 
@@ -199,24 +276,55 @@ function alignment_single_delete_buttons()
 	$(".delete_item").live("click", function() {
 		$(this).parent().addClass("marked_for_mass").addClass("ui-state-error").addClass("to-delete");
 
-		var inputs = $(this).siblings("input");
-
-		var alignment_id = inputs.eq(1).val();
+		var alignment_id = $(this).siblings("input").last().val();
 		$("#alignment_delete_id").val(alignment_id);
 
-		var alignment = inputs.eq(0).text();
+		var alignment = $(this).siblings(".item_name").text();
 		$("#confirmDeleteAlignmentDialog").find("span").last().text(alignment);
 
-		inputs.eq(0).addClass("editing");
+		$(this).siblings(".item_name").addClass("editing");
 
 		$("#confirmDeleteAlignmentDialog").dialog("open");
+	});
+}
+
+function alignment_mass_edit_button()
+{
+	$("#btnEditAlignments").live("click", function() {
+		$(".alignment_delete_check:checked").each(function() {
+			var to_append = false;
+
+			if ($("#alignment_mass_edit tbody tr td").children().first().val() != "")
+			{
+				var new_row = $("#alignment_mass_edit").children("tbody").children().first().clone();
+				to_append = true;
+			}
+			else
+			{
+				var new_row = $("#alignment_mass_edit tbody").children().first();
+			}
+
+			var alignment_id = $(this).siblings("input").val();
+			var alignment = $(this).siblings(".item_name").text();
+
+			var inputs = new_row.children().last().children("input");
+			inputs.first().val(alignment).attr("data-orig", alignment);
+			inputs.last().val(alignment_id);
+
+			if (to_append)
+			{
+				$("#alignment_mass_edit tbody").append(new_row);
+			}
+		});
+
+		$("#massEditAlignmentsDialog").dialog("open");
 	});
 }
 
 function alignment_mass_delete_button()
 {
 	$("#btnDeleteAlignments").button().live("click", function() {
-		$(".delete_check:checked").each(function() {
+		$(".alignment_delete_check:checked").each(function() {
 			// Add class to parent for easy removal from list
 			$(this).parent().addClass("to-delete").addClass("ui-state-error");
 
@@ -284,10 +392,10 @@ function set_general_form_buttons()
 			$(this).parent().remove();
 		}
 
-		var temp_id = $(this).siblings(".id").val();
+		var temp_id = $(this).siblings("input").last().val();
 
 		$(".marked_for_mass").each(function() {
-			var mfm_id = $(this).children(".id").val();
+			var mfm_id = $(this).children("input").last().val();
 
 			if (temp_id == mfm_id)
 			{
@@ -304,16 +412,22 @@ function set_inline_edit_buttons()
 	});
 
 	$(".temp_edit_button").live("click", function() {
+		alert("1");
+
 		var desc = $("#replace_input").val();
-		var alignment_id = $(this).siblings(".id").val();
-		var display_order = $(this).siblings(".display_order").val();
+		var alignment_id = $(this).siblings("input").last().val();
 
-		var inputs = $("#frmUpdateAlignment").find("input");
-		inputs.eq(0).val(desc);
-		inputs.eq(1).val(alignment_id);
-		inputs.eq(2).val(display_order);
+		alert("2");
 
-		$("#frmUpdateAlignment").submit();
+		var inputs = $("#alignment_mass_edit").find(".change_data").children("input");
+		inputs.first().val(desc);
+		inputs.last().val(alignment_id);
+
+		alert("3");
+
+		$("#frmMassUpdateAlignment").submit();
+
+		alert("8");
 	});
 }
 
@@ -330,14 +444,16 @@ function cancel_inline_edit()
 // Show/Hide mass edit/delete buttons
 function control_buttons_check()
 {
-	var num_checked = $(".delete_check:checked").length;
+	var num_checked = $(".alignment_delete_check:checked").length;
 
 	if (num_checked == 0 && $("#btnDeleteAlignments").is(":visible"))
 	{
+		$("#btnEditAlignments").hide();
 		$("#btnDeleteAlignments").hide();
 	}
 	else if (num_checked > 0 && $("#btnDeleteAlignments").not(":visible"))
 	{
+		$("#btnEditAlignments").show();
 		$("#btnDeleteAlignments").show();
 	}
 }
@@ -357,36 +473,7 @@ function alignment_init_events()
 
 function alignment_inline_editing()
 {
-	/*
-	$(".inline_edit").live("dblclick", function(e) {
-		e.preventDefault();
-
-		if ($(".inline-editing").length > 0)
-		{
-			cancel_inline_edit();
-		}
-
-		$(this).addClass("marked_for_mass").addClass("ui-state-highlight");
-
-		var orig_val = $(this).find(".item_name").text();
-
-		$("#temp_input").val(orig_val);
-
-		$(this).find(".item_name").addClass("inline-editing");
-		$(this).find(".item_name").html("<input type='text' id='replace_input' value='" + orig_val + "' />");
-
-		// Hide delete button and create cancel button
-		$(this).find(".delete_item").hide();
-		$(this).find(".delete_item").after('<button class="list_button edit_item">Edit</button>');
-		$(this).find(".delete_item").after('<button id="btnCancelInline" class="list_button">Cancel</button>');
-		$(this).find(".edit_item").addClass("temp_edit_button").removeClass("edit_item");
-
-		$("#btnCancelInline, .temp_edit_button").button();
-	});
-	*/
-
 	$(".item_name").live("dblclick", function(e) {
-	
 		e.preventDefault();
 
 		if ($(".inline-editing").length > 0)
@@ -394,12 +481,11 @@ function alignment_inline_editing()
 			cancel_inline_edit();
 		}
 
-		$(this).parent().addClass("marked_for_mass").addClass("ui-state-highlight");
+		$(this).parent().addClass("marked_for_mass").addClass("ui-state-highlight");;
 
 		var orig_val = $(this).text();
 
 		$("#temp_input").val(orig_val);
-
 		$(this).addClass("inline-editing");
 		$(this).html("<input type='text' id='replace_input' value='" + orig_val + "' />");
 
@@ -408,23 +494,22 @@ function alignment_inline_editing()
 		$(this).siblings(".delete_item").after('<button class="list_button edit_item">Edit</button>');
 		$(this).siblings(".delete_item").after('<button id="btnCancelInline" class="list_button">Cancel</button>');
 		$(this).siblings(".edit_item").addClass("temp_edit_button").removeClass("edit_item");
-
 		$("#btnCancelInline, .temp_edit_button").button();
 	});
 }
 
 function alignment_mass_change_checkboxes()
 {
-	var checkboxes = $(".delete_check");
+	var checkboxes = $(".alignment_delete_check");
 
 	checkboxes.live("click", function() {
-		$(this).parent().toggleClass("marked_for_mass").toggleClass("ui-state-error");		
+		$(this).parent().toggleClass("marked_for_mass");		
 
 		control_buttons_check();
 
-		if ($(".delete_check:checked").length == 0)
+		if ($(".alignment_delete_check:checked").length == 0)
 		{
-			//clear_mass_edit_table();
+			clear_mass_edit_table();
 		}
 	});
 
@@ -438,17 +523,10 @@ function alignment_mass_change_checkboxes()
 
 function alignment_inline_edit_hover()
 {
-	$(".inline_edit").live("mouseenter", function() {
+	$(".inline_edit").live("hover", function() {
 		if (!$(this).hasClass("marked_for_mass"))
 		{
-			$(this).addClass("ui-state-highlight");
-		}
-	});
-
-	$(".inline_edit").live("mouseleave", function() {
-		if (!$(this).hasClass("marked_for_mass"))
-		{
-			$(this).removeClass("ui-state-highlight");
+			$(this).toggleClass("ui-state-highlight");
 		}
 	});
 }
@@ -470,7 +548,7 @@ function remove_classes(theElement)
 
 function alignment_init_sheepit()
 {
-	//alignment_mass_add_sheepit();	
+	alignment_mass_add_sheepit();	
 }
 
 function alignment_mass_add_sheepit()
@@ -499,15 +577,15 @@ function alignment_mass_add_sheepit()
 
 function alignment_init_forms()
 {
-	alignment_add_form();
-	alignment_edit_form();
+	alignment_mass_add_form();
+	alignment_mass_edit_form();
 	alignment_delete_form();
 	alignment_mass_delete_form();
 }
 
-function alignment_add_form()
+function alignment_mass_add_form()
 {
-	$("#frmAddAlignment").ajaxForm({
+	$("#frmMassAddAlignment").ajaxForm({
 		clearForm:	true,
 		resetForm:	true,
 		beforeSubmit:	display_ajax_loader,
@@ -515,9 +593,9 @@ function alignment_add_form()
 	});
 }
 
-function alignment_edit_form()
+function alignment_mass_edit_form()
 {
-	$("#frmUpdateAlignment").ajaxForm({
+	$("#frmMassUpdateAlignment").ajaxForm({
 		clearForm:	true,
 		resetForm:	true,
 		beforeSubmit:	display_ajax_loader,
@@ -568,6 +646,8 @@ function add_alignment_success(responseText, statusText, xhr, $form)
 	{
 		add_gritter(alignment.f_title, alignment.f_message);
 	}
+
+	$form.parent().dialog("close");
 }
 
 function edit_alignment_success(responseText, statusText, xhr, $form)
@@ -591,7 +671,7 @@ function edit_alignment_success(responseText, statusText, xhr, $form)
 			}
 
 			$(".marked_for_mass").each(function() {
-				var myId = $(this).children(".id").val();
+				var myId = $(this).children("input").last().val();
 
 				if (updated_item.id == myId)
 				{
@@ -604,7 +684,7 @@ function edit_alignment_success(responseText, statusText, xhr, $form)
 			});
 		});
 
-		animate_list_item("marked_for_mass", "temp_class", 0, 0);
+		animate_list_item("marked_for_mass", "message_default", 0, 0);
 
 		add_gritter(alignment.s_title, alignment.s_message);
 	}
@@ -614,7 +694,7 @@ function edit_alignment_success(responseText, statusText, xhr, $form)
 		add_gritter(alignment.f_title, alignment.f_message);
 	}
 
-	//$form.parent().dialog("close");
+	$form.parent().dialog("close");
 }
 
 function delete_alignment_success(responseText, statusText, xhr, $form) 

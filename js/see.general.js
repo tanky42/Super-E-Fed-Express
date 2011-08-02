@@ -12,48 +12,55 @@ function init()
 
 function set_main_size()
 {
+	var theMain = $("#main");
+
 	var w_oHeight = $(window).height();
 	var h_oHeight = $("header").outerHeight(true);
 	var f_oHeight = $("footer").outerHeight(true);
-	var mo_oHeight = $("#main").outerHeight(true);
+	var mo_oHeight = theMain.outerHeight(true);
 
 	var m_oHeight = w_oHeight - (h_oHeight + f_oHeight) - 80;
 
-	$("#main").height(m_oHeight);
+	theMain.height(m_oHeight);
 }
 
 function clear_flash()
 {
-	$("#flash").empty();
+	var theFlash = $("#flash");
 
-	if ($("#flash").hasClass("message_success"))
-	{
-		$("#flash").removeClass("message_success");
-	}
+	theFlash.empty();
 
-	if ($("#flash").hasClass("message_error"))
+	var flash_states = new Array(
+		"message_success",
+		"message_error",
+		"ui-state-highlight",
+		"ui-state-error"
+	);
+
+	for (var i = 0; i < flash_states.length; i++)
 	{
-		$("#flash").removeClass("message_error");
+		theFlash.removeClass(flash_states[i]);
 	}
 }
 
 function display_flash_message(theMessage, newClass, removeMessage)
 {
-	if ($("#flash").hasClass("ui-state-highlight"))
+	var theFlash = $("#flash");
+
+	if (theFlash.hasClass("ui-state-highlight"))
 	{
 		var origClass = "ui-state-highlight";
 	}
-	else
+	else if (theFlash.attr("class") == "")
 	{
+		theFlash.addClass("message_default");
 		var origClass = "message_default";
 	}
 
-	//alert("Orig Class: " + origClass);
-
 	if (removeMessage)
 	{
-		$("#flash").switchClass(origClass, newClass, 500, function() {
-			$("#flash").append(theMessage);
+		theFlash.switchClass(origClass, newClass, 500, function() {
+			theFlash.append(theMessage);
 
 			if (origClass == "ui-state-highlight")
 			{
@@ -61,25 +68,25 @@ function display_flash_message(theMessage, newClass, removeMessage)
 			}
 		}).delay(3000)
 		.switchClass(newClass, origClass, 1000, function() {
-			$("#flash").children().each(function() {
+			theFlash.children().each(function() {
 				$(this).fadeOut('slow').remove();
 			});
 		});
 
-		if ($("#flash").hasClass("ui-state-highlight"))
+		if (theFlash.hasClass("ui-state-highlight"))
 		{
-			$("#flash").removeClass("ui-state-highlight");
+			theFlash.removeClass("ui-state-highlight");
 		}
 
-		if (!$("#flash").hasClass("message_default"))
+		if (!theFlash.hasClass("message_default"))
 		{
-			$("#flash").addClass("message_default");
+			theFlash.addClass("message_default");
 		}
 	}
 	else
 	{
-		$("#flash").switchClass(origClass, newClass, 500, function() {
-			$("#flash").append(theMessage);
+		theFlash.switchClass(origClass, newClass, 500, function() {
+			theFlash.append(theMessage);
 		});
 	}
 }
@@ -106,18 +113,31 @@ function animate_list_item(item_class, new_class, delay_length, animate_length)
 function display_ajax_loader()
 {
 	var theMessage = '<p><img class="ajax-loader" src="' + base_url + 'js/images/ajax-loader.gif" alt="Content is loading" />Content is loading</p>';
-	display_flash_message(theMessage, "ui-state-highlight", false)
+
+	display_flash_message(theMessage, "ui-state-highlight", false);
 }
 
 function check_for_ajax_loader()
 {
-	if ($(".ajax-loader").length != 0)
+	var ajaxLoader = $(".ajax-loader");
+
+	if (ajaxLoader.length != 0)
 	{
-		$(".ajax-loader").parent().remove();
+		ajaxLoader.parent().remove();
 	}
 }
 
 function select_input_text(theInput)
 {
 	theInput.select();
+}
+
+function add_gritter(title, text)
+{
+	$.gritter.add({
+		title:	title,
+		text:	text
+	});
+
+	setTimeout("clear_flash()", 500);
 }

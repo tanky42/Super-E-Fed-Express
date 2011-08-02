@@ -1,16 +1,6 @@
-		<!-- <link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>css/forms/screen.css"> -->
-		<!-- <link rel="stylesheet" type="text/css" href="<?php echo base_url(); ?>css/forms/dropdown.css"> -->
-
-		<link href="<?php echo base_url(); ?>css/validate/validationEngine.jquery.css" rel="stylesheet" type="text/css" />
-
 		<link href="<?php echo base_url(); ?>css/see-modules/see.alignments.css" rel="stylesheet" type="text/css" />
 
-		<!-- <script type="text/javascript" src="<?php echo base_url(); ?>js/forms/helpers.js"></script> -->
-		<!-- <script type="text/javascript" src="<?php echo base_url(); ?>js/forms/date.js"></script> -->
-		<!-- <script type="text/javascript" src="<?php echo base_url(); ?>js/forms/form.js"></script> -->
-
 		<script type="text/javascript" src="<?php echo base_url(); ?>js/forms/jquery.form.js"></script>
-
 		<script type="text/javascript" src="<?php echo base_url(); ?>js/see-modules/see.alignments.js"></script>
 
 		<script>
@@ -18,101 +8,100 @@
 			init();
 			alignment_init();
 
+			/*
 			if ($("#flash").html() != "")
 			{
 				$("#flash").addClass("has_messages");
-			}			
-
-			if ($("#temp_input").length == 0)
-			{
-				$("#main").append("<input type='hidden' id='temp_input' value='' />");
 			}
+			*/
 
-			$(".mass-remove-icon").live("click", function() {
-				if ($(this).closest("tbody").children().length > 1)
-				{
-					$(this).closest("tr").remove();
-				}
-				else
-				{
-					$(this).closest("div").dialog("close");
-				}
-			});
-
-			$(".mass-delete-remove").live("click", function() {
-				var temp_id = $(this).prev().val();
-
-				$(".marked_for_mass").each(function() {
-					var mfm_id = $(this).children("input").last().val();
-
-					if (temp_id == mfm_id)
-					{
-						$(this).children("input").first().trigger("click");
-					}
-				});
-			});
-
-			var sheepItForm = $("#frmMassAddAlignment").sheepIt({
-				separator:		"",
-				allowRemoveLast:	true,
-				allowRemoveCurrent:	true,
-				allowRemoveAll:		true,
-				allowAdd:		true,
-				allowAddN:		true,
-				maxFormsCount:		10,
-				minFormsCount:		0,
-				iniFormsCount:		2
+			$("#alignments").sortable({
+				axis:		"y",
+				placeholder:	"ui-state-highlight",
+				revert:		true,
+				update:		update_display_order
 			});
 		});
+
+		function update_display_order()
+		{
+			var updateForm = $("#frmUpdateAlignment");
+
+			// Clear update form
+			reset_update_form(updateForm);
+
+			// Clone update form inputs and empty it
+			var form_inputs = updateForm.find("input").clone();
+			updateForm.empty();
+
+			var idx = 1;
+
+			var items = $(this).find("li");
+
+			var changeFound = false;
+
+			items.each(function() {
+				var list_inputs = $(this).find("input");
+
+				var desc = $(this).find(".item_name").text();
+				var id = list_inputs.eq(1).val();
+				var orig_display_order = list_inputs.eq(2).val();
+
+				if (parseInt(orig_display_order) != parseInt(idx))
+				{
+					changeFound = true;
+
+					var display_order = idx;
+
+					list_inputs.eq(2).val(idx);
+
+					var new_form_inputs = form_inputs.clone();
+
+					new_form_inputs.eq(0).val(desc);
+					new_form_inputs.eq(1).val(id);
+					new_form_inputs.eq(2).val(display_order);
+
+					updateForm.append(new_form_inputs);
+				}
+				else if (changeFound == true)
+				{
+					alert("End of changes");
+
+					updateForm.append(new_form_inputs);
+
+					return false;
+				}
+
+				idx++;				
+			});
+
+			updateForm.submit();
+
+			// Reset update form
+			reset_update_form(updateForm);
+		}
+
+		function reset_update_form(updateForm)
+		{
+			updateForm.empty();
+
+			var inputs = '<input type="hidden" name="edit_description[]" value="" data-orig="" required="required" />';
+			inputs += '<input type="hidden" name="alignment_id[]" value="" />';
+			inputs += '<input type="hidden" name="display_order[]" value="" />';
+
+			updateForm.html(inputs);
+		}
 		</script>
-		
-		<style>
-		table {
-			border: 1px solid black;
-			border-collapse:collapse;
-			width: 100%;
-		}
-
-		th, td {
-			border: 1px solid black;
-			padding: 5px;
-			text-align: center;
-			width: 50%;
-		}
-
-		td input {
-			width: 90%;		
-		}
-
-		.settings_list {
-			overflow: auto;
-		}
-
-		.mass-remove-icon {
-			float: right;
-		}
-
-		.dialog-notice {
-			display: inline-block;
-		}
-
-		.btnAdditionalRow {
-			margin-right: 25px;
-		}
-		</style>
 
 		<div id="alignments_list" class="settings_list">
 			<?php echo Modules::run('alignments/display_alignment_list'); ?>
 		</div>
 
-		<!-- Mass Add Alignments Dialog -->
-		<?php echo Modules::run('alignments/get_mass_add_dialog'); ?>
+		<!-- Confirm Edit Alignment Form -->
+		<?php echo Modules::run('alignments/get_edit_form'); ?>
 
 		<!-- Confirm Delete Alignment Dialog -->
 		<?php echo Modules::run('alignments/get_delete_dialog'); ?>
-
-		<!-- Mass Edit Alignments Dialog -->
-		<?php echo Modules::run('alignments/get_mass_edit_dialog'); ?>
 
 		<!-- Mass Delete Alignments Dialog -->
 		<?php echo Modules::run('alignments/get_mass_delete_dialog'); ?>

@@ -6,6 +6,8 @@
 	<link href="<?php echo base_url(); ?>css/sheep/buttons.css" rel="stylesheet" type="text/css" />
 	<link href="<?php echo base_url(); ?>css/sheep/forms.css" rel="stylesheet" type="text/css" />
 	<link href="<?php echo base_url(); ?>css/validate/jquery.validval.css" rel="stylesheet" type="text/css" />
+	<link href="<?php echo base_url(); ?>css/gritter/jquery.gritter.css" rel="stylesheet" type="text/css" />
+	<link href="<?php echo base_url(); ?>css/pagination/pagination.css" rel="stylesheet" type="text/css" />
 	<link href="<?php echo base_url(); ?>css/stylesheet.css" rel="stylesheet" type="text/css" />
 
 	<!-- Script to enable HTML5 compatibility in IE -->
@@ -18,6 +20,8 @@
 	<script type="text/javascript" src="<?php echo base_url(); ?>js/sheep/jquery.sheepItPlugin-1.0.0.min.js"></script>
 	<script type="text/javascript" src="<?php echo base_url(); ?>js/validate/jquery.validVal-2.4.2.js"></script>
 	<script type="text/javascript" src="<?php echo base_url(); ?>js/validate/jquery.validVal-customValidations.js"></script>
+	<script type="text/javascript" src="<?php echo base_url(); ?>js/gritter/jquery.gritter.min.js"></script>
+	<script type="text/javascript" src="<?php echo base_url(); ?>js/pagination/jquery.pagination.js"></script>
 
 	<!-- Custom Scripts -->
 	<script type="text/javascript" src="<?php echo base_url(); ?>js/see.general.js"></script>

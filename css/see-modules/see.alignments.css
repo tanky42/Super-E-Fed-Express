@@ -35,3 +35,58 @@
 .edit_item, .temp_edit_button {
 	margin-right: 6px;
 }
+
+table {
+	border: 1px solid black;
+	border-collapse:collapse;
+	width: 100%;
+}
+
+th, td {
+	border: 1px solid black;
+	padding: 5px;
+	text-align: center;
+	width: 50%;
+}
+
+td input {
+	width: 90%;		
+}
+
+#alignment_mass_edit tbody tr td input {
+	width: 75%;
+}
+
+.settings_list {
+	overflow: auto;
+}
+
+.dialog-notice {
+	display: inline-block;
+}
+
+.btnAdditionalRow {
+	margin-right: 25px;
+}
+
+.sheep_controls {
+	margin-top: 15px;
+}
+
+.add_rows_input {
+	height: 20px;
+	font-size: 14px !important;
+	font-weight: bold;
+	width: 25px;
+}
+
+.add_rows_select {
+	height: 24px;
+	font-size: 16px !important;
+	font-weight: bold;
+	width: 45px;
+}
+
+.mass_delete_list {
+	list-style-type: none !important;
+}

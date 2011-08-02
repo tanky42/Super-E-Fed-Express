@@ -33,6 +33,7 @@ class Alignments extends MX_Controller {
 	function display_alignment_list()
 	{
 		$a = new Alignment();
+		$a->order_by("display_order", "asc");
 
 		$data['alignments'] = $a->get();
 		$data['num_alignments'] = $a->result_count();
@@ -42,12 +43,18 @@ class Alignments extends MX_Controller {
 			$data['alignments'] = "There are no alignments";
 		}
 
+		$data['edit_form_url'] = "alignments/update_alignment_ajax";
+
 		return $this->load->view('alignment-list', $data, TRUE);
 	}
 
 	/*******************************************************************
 		Display Dialogs
 	*******************************************************************/
+	function get_edit_form()
+	{
+		$this->load->view('ajax-edit-alignments');
+	}
 
 	function get_mass_add_dialog()
 	{
@@ -78,10 +85,17 @@ class Alignments extends MX_Controller {
 		if (isset($_POST['alignment_description']))
 		{
 			$desc = $this->input->post('alignment_description');
-		
+
 			$success = 0;
-			$message = '';
+			$fail = 0;
+			$s_title = '';
+			$s_message = '';
+			$f_title = '';
+			$f_message = '';
 			$new_items = '';
+
+			$num_s = 0;
+			$num_f = 0;
 
 			foreach ($desc as $d)
 			{
@@ -90,9 +104,20 @@ class Alignments extends MX_Controller {
 
 				if ($a->save())
 				{
-					$message .= "<p>$d was successfully saved</p>";
+					$num_s++;
 
-					$new_items .= '<li class="new_item">';
+					if ($num_s == 1)
+					{
+						$s_title = "Alignment Successfully Saved";
+					}
+					else
+					{
+						$s_title = "Alignments Successfully Saved";
+					}
+
+					$s_message .= "<p>$d was successfully saved</p>";
+
+					$new_items .= '<li class="new_item inline_edit">';
 					$new_items .= '<input type="checkbox" name="delete_alignment[]" class="alignment_delete_check" value="1" />';
 					$new_items .= '<span class="item_name">' . $a->description . '</span>';
 					$new_items .= '<input type="hidden" value="' . $a->id . '" />';
@@ -104,15 +129,32 @@ class Alignments extends MX_Controller {
 				}
 				else
 				{
-					$message = "<p>$d was <strong>not</strong> successfully saved</p>";
-					$message .= "<p>" . $a->error->description . "</p>";
+					$num_f++;
+
+					if ($num_f == 1)
+					{
+						$f_title = "Alignment Was Not Saved";
+					}
+					else
+					{
+						$f_title = "Alignments Were Not Saved";
+					}
+
+					$f_message = "<p>$d was <strong>not</strong> successfully saved</p>";
+					$f_message .= "<p>" . $a->error->description . "</p>";
+
+					$fail = 1;
 				}
 			}
 
 			$data = array(
 				'success'	=> $success,
-				'message'	=> $message,
-				'new_items'	=> $new_items
+				's_title'	=> $s_title,
+				's_message'	=> $s_message,
+				'new_items'	=> $new_items,
+				'fail'		=> $fail,
+				'f_title'	=> $f_title,
+				'f_message'	=> $f_message
 			);
 
 			echo json_encode($data);
@@ -131,30 +173,50 @@ class Alignments extends MX_Controller {
 			{
 				$id = array($this->input->post('alignment_id'));
 				$desc = array($this->input->post('edit_description'));
+				$display_order = array($this->input->post('display_order'));
 			}
 			else
 			{
 				$id = $this->input->post('alignment_id');
 				$desc = $this->input->post('edit_description');
+				$display_order = $this->input->post('display_order');
 			}
 
 			$success = 0;
-			$message = "";
+			$fail = 0;
+			$s_title = '';
+			$s_message = '';
+			$f_title = '';
+			$f_message = '';
 			$info = array();
 
 			$idx = 0;
+			$num_s = 0;
+			$num_f = 0;
 
 			foreach($id as $item)
 			{
 				$a = new Alignment();
 				$a->where('id', $item)->get();
 
-				$a->description = $desc[$idx];				
+				$a->description = $desc[$idx];
+				$a->display_order = $display_order[$idx];				
 
 				if ($a->save())
 				{
+					$num_s++;
+
+					if ($num_s == 1)
+					{
+						$s_title = "Alignment Successfully Updated";
+					}
+					else
+					{
+						$s_title = "Alignments Successfully Updated";
+					}
+
 					$success = 1;
-					$message .= "<p>$desc[$idx] was successfully updated</p>";
+					$s_message .= "<p>$desc[$idx] was successfully updated</p>";
 
 					$info[] = array(
 						'id'	=> $a->id,
@@ -163,8 +225,21 @@ class Alignments extends MX_Controller {
 				}
 				else
 				{
-					$message .= "<p>$desc[$idx] was <strong>not</strong> successfully updated</p>";
-					$message .= "<p>" . $a->error->description . "</p>";
+					$num_f++;
+
+					if ($num_f == 1)
+					{
+						$f_title = "Alignment Was Not Updated";
+					}
+					else
+					{
+						$f_title = "Alignments Were Not Updated";
+					}
+
+					$fail = 1;
+
+					$f_message .= "<p>$desc[$idx] was <strong>not</strong> successfully updated</p>";
+					$f_message .= "<p>" . $a->error->description . "</p>";
 				}
 
 				$idx++;
@@ -174,8 +249,12 @@ class Alignments extends MX_Controller {
 
 			$data = array(
 				"success"	=> $success,
-				"message"	=> $message,
-				"info"		=> $info
+				"s_title"	=> $s_title,
+				"s_message"	=> $s_message,
+				"info"		=> $info,
+				"fail"		=> $fail,
+				"f_title"	=> $f_title,
+				"f_message"	=> $f_message,
 			);
 
 			echo json_encode($data);
@@ -211,11 +290,14 @@ class Alignments extends MX_Controller {
 
 				$a->delete();
 
+				$title = "Alignment Deleted";
+
 				$message .= "<p>$desc has been deleted</p>";
 			}
 
 			$data = array(
-				"message"	=> $message
+				"s_title"		=> $title,
+				"s_message"	=> $message
 			);
 
 			echo json_encode($data);
