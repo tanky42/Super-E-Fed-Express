@@ -3,14 +3,10 @@ function alignment_init()
 	alignment_init_sheepit(); // SheepIt has to be called before ValidVal
 	alignment_init_validation();
 	alignment_init_dialogs();
+	alignment_sortable_init();
 	alignment_init_buttons();
 	alignment_init_events();
 	alignment_init_forms();
-
-	if ($("#temp_input").length == 0)
-	{
-		$("#main").append("<input type='hidden' id='temp_input' value='' />");
-	}
 }
 
 /********************************************************
@@ -19,9 +15,81 @@ function alignment_init()
 *							*
 ********************************************************/
 
+// Create variables for validated forms
+var validated_add_alignment, validated_edit_alignment;
+
 function alignment_init_validation()
 {
-	$("#frmMassAddAlignment").validVal();
+	validated_add_alignment = 
+		$("#frmAddAlignment").validVal({
+			validate:		{
+				onBlur:		false,
+				onSubmit:	true
+			},
+			invalidFormFunc:	build_valid_val_error
+		});
+
+	validated_edit_alignment =
+		$("#frmUpdateAlignment").validVal({
+			validate:		{
+				onBlur:		false,
+				onSubmit:	true,
+				hiddenFields:	true
+			},
+			invalidFieldFunc:	inline_edit_validation_error,
+			invalidFormFunc:	build_valid_val_error
+		});
+}
+
+function inline_edit_validation_error($field, $form, language)
+{
+	$("#replace_input").addClass("invalid");
+}
+
+function build_valid_val_error(field_arr, $form, language)
+{
+	var list = "";
+
+	for (var i = 0; i < field_arr.length; i++)
+	{
+		var theField = field_arr[i]
+
+		if (theField.attr("title"))
+		{
+			list += "\t" + theField.attr("title");
+		}
+		else
+		{
+			alert("Attention, not all the fields have been filled out correctly.");
+			return false;
+		}
+
+		if (theField.hasClass("email"))
+		{
+			list += " - Must be a valid email address";
+		}
+
+		if (theField.hasClass("number"))
+		{
+			list += " - Must be a number";
+		}
+
+		if (theField.hasClass("url"))
+		{
+			list += " - Must be a valid URL";
+		}
+
+		list += "\n";
+	}
+
+	var f = "field";
+
+	if (field_arr.length > 1)
+	{
+		f = "fields";
+	}
+
+	alert("Please complete the following " + f + ":\n" + list);
 }
 
 /********************************************************
@@ -78,7 +146,7 @@ function alignment_delete_dialog()
 					$(this).val("");
 				});
 
-				remove_classes($(".to_delete"));
+				remove_classes($(".to-delete"));
 				
 				$(this).dialog("close");
 			}
@@ -104,6 +172,89 @@ function clear_sheep_table(theTable)
 	theTable.next().find(".add_rows_select").children().first().attr("selected", "selected");
 
 	theTable.closest("form").validVal();
+}
+
+/********************************************************
+*							*
+*	Sortables					*
+*							*
+********************************************************/
+
+function alignment_sortable_init()
+{
+	$("#alignments").sortable({
+		axis:		"y",
+		placeholder:	"ui-state-highlight",
+		revert:		true,
+		update:		alignment_update_display_order
+	});
+}
+
+function alignment_update_display_order()
+{
+	var updateForm = $("#frmUpdateAlignment");
+
+	// Clear update form
+	alignment_reset_update_form(updateForm);
+
+	// Clone update form inputs and empty it
+	var form_inputs = updateForm.find("input").clone();
+	updateForm.empty();
+
+	var idx = 1;
+
+	var items = $(this).find("li");
+
+	var changeFound = false;
+
+	items.each(function() {
+		var list_inputs = $(this).find("input");
+
+		var desc = $(this).find(".item_name").text();
+		var id = list_inputs.eq(1).val();
+		var orig_display_order = list_inputs.eq(2).val();
+
+		if (parseInt(orig_display_order) != parseInt(idx))
+		{
+			changeFound = true;
+
+			var display_order = idx;
+
+			list_inputs.eq(2).val(idx);
+
+			var new_form_inputs = form_inputs.clone();
+
+			new_form_inputs.eq(0).val(desc);
+			new_form_inputs.eq(1).val(id);
+			new_form_inputs.eq(2).val(display_order);
+
+			updateForm.append(new_form_inputs);
+		}
+		else if (changeFound == true)
+		{
+			updateForm.append(new_form_inputs);
+
+			return false;
+		}
+
+		idx++;				
+	});
+
+	updateForm.submit();
+
+	// Reset update form
+	alignment_reset_update_form(updateForm);
+}
+
+function alignment_reset_update_form(updateForm)
+{
+	updateForm.empty();
+
+	var inputs = '<input type="hidden" name="edit_description[]" value="" data-orig="" required="required" />';
+	inputs += '<input type="hidden" name="alignment_id[]" value="" />';
+	inputs += '<input type="hidden" name="display_order[]" value="" />';
+
+	updateForm.html(inputs);
 }
 
 /********************************************************
@@ -190,7 +341,13 @@ function alignment_add_button()
 {
 	$("#btnAddAlignment").live("click", function(e) {
 		e.preventDefault();
-		$("#frmAddAlignment").submit();
+
+		var form_data = validated_add_alignment.submitform();
+
+		if (form_data)
+		{
+			$("#frmAddAlignment").submit();
+		}
 	});
 }
 
@@ -269,9 +426,9 @@ function set_general_form_buttons()
 	});
 
 	$(".reset").live("click", function() {
-		var theInput = $(this).siblings().first();
-		var orig_data = theInput.attr("data-orig");
-		theInput.val(orig_data);
+		var replace_input = $("#replace_input")
+		var orig_data = replace_input.attr("data-orig");
+		replace_input.val(orig_data).select();
 	});
 
 	$(".mass-remove-icon").live("click", function() {
@@ -303,7 +460,9 @@ function set_inline_edit_buttons()
 		cancel_inline_edit();
 	});
 
-	$(".temp_edit_button").live("click", function() {
+	$(".temp_edit_button").live("click", function(e) {
+		e.preventDefault();
+
 		var desc = $("#replace_input").val();
 		var alignment_id = $(this).siblings(".id").val();
 		var display_order = $(this).siblings(".display_order").val();
@@ -313,18 +472,28 @@ function set_inline_edit_buttons()
 		inputs.eq(1).val(alignment_id);
 		inputs.eq(2).val(display_order);
 
-		$("#frmUpdateAlignment").submit();
+		var form_data = validated_edit_alignment.submitform();
+
+		if (form_data)
+		{
+			$("#frmUpdateAlignment").submit();
+		}		
 	});
 }
 
 function cancel_inline_edit()
 {
-	$("#replace_input").remove();
-	$("#btnCancelInline").parent().removeClass("marked_for_mass");
-	$("#btnCancelInline").remove();
-	$(".inline-editing").siblings(".delete_item").show();
+	var replace_input = $("#replace_input");
+	var orig_data = replace_input.attr("data-orig");
+	var inlineCancel = $("#btnCancelInline");
+	var inlineEditing = $(".inline-editing");
+	
+	replace_input.parent().siblings(".reset").hide().end().end().remove();
+	inlineCancel.parent().removeClass("marked_for_mass");
+	inlineCancel.remove();
+	inlineEditing.siblings(".delete_item").show();
 	$(".temp_edit_button").remove();
-	$(".inline-editing").html("").text($("#temp_input").val()).removeClass("inline-editing");
+	inlineEditing.html("").text(orig_data).removeClass("inline-editing").parent().removeClass("ui-state-highlight");
 }
 
 // Show/Hide mass edit/delete buttons
@@ -357,7 +526,6 @@ function alignment_init_events()
 
 function alignment_inline_editing()
 {
-	/*
 	$(".inline_edit").live("dblclick", function(e) {
 		e.preventDefault();
 
@@ -368,48 +536,24 @@ function alignment_inline_editing()
 
 		$(this).addClass("marked_for_mass").addClass("ui-state-highlight");
 
-		var orig_val = $(this).find(".item_name").text();
+		var item_name = $(this).find(".item_name");
+		var delete_item = $(this).find(".delete_item");
 
-		$("#temp_input").val(orig_val);
+		var orig_val = item_name.text();
 
-		$(this).find(".item_name").addClass("inline-editing");
-		$(this).find(".item_name").html("<input type='text' id='replace_input' value='" + orig_val + "' />");
-
-		// Hide delete button and create cancel button
-		$(this).find(".delete_item").hide();
-		$(this).find(".delete_item").after('<button class="list_button edit_item">Edit</button>');
-		$(this).find(".delete_item").after('<button id="btnCancelInline" class="list_button">Cancel</button>');
-		$(this).find(".edit_item").addClass("temp_edit_button").removeClass("edit_item");
-
-		$("#btnCancelInline, .temp_edit_button").button();
-	});
-	*/
-
-	$(".item_name").live("dblclick", function(e) {
-	
-		e.preventDefault();
-
-		if ($(".inline-editing").length > 0)
-		{
-			cancel_inline_edit();
-		}
-
-		$(this).parent().addClass("marked_for_mass").addClass("ui-state-highlight");
-
-		var orig_val = $(this).text();
-
-		$("#temp_input").val(orig_val);
-
-		$(this).addClass("inline-editing");
-		$(this).html("<input type='text' id='replace_input' value='" + orig_val + "' />");
+		item_name.addClass("inline-editing");
+		item_name.html("<input type='text' id='replace_input' value='" + orig_val + "' title='Alignment Description' data-orig='" + orig_val + "' />");
 
 		// Hide delete button and create cancel button
-		$(this).siblings(".delete_item").hide();
-		$(this).siblings(".delete_item").after('<button class="list_button edit_item">Edit</button>');
-		$(this).siblings(".delete_item").after('<button id="btnCancelInline" class="list_button">Cancel</button>');
-		$(this).siblings(".edit_item").addClass("temp_edit_button").removeClass("edit_item");
+		delete_item.hide();
+		delete_item.after('<button class="list_button temp_edit_button">Save</button>');
+		delete_item.after('<button id="btnCancelInline" class="list_button">Cancel</button>');
 
 		$("#btnCancelInline, .temp_edit_button").button();
+
+		$(this).find(".reset").show();
+
+		$("#replace_input").select();
 	});
 }
 
@@ -421,11 +565,6 @@ function alignment_mass_change_checkboxes()
 		$(this).parent().toggleClass("marked_for_mass").toggleClass("ui-state-error");		
 
 		control_buttons_check();
-
-		if ($(".delete_check:checked").length == 0)
-		{
-			//clear_mass_edit_table();
-		}
 	});
 
 	checkboxes.each(function() {
@@ -585,7 +724,7 @@ function edit_alignment_success(responseText, statusText, xhr, $form)
 
 			if ($("#replace_input").length != 0)
 			{
-				$("#replace_input").remove();
+				$("#replace_input").parent().siblings(".reset").hide().end().end().remove();
 				$("#btnCancelInline").remove();
 				$(".temp_edit_button").remove();
 			}
@@ -613,8 +752,6 @@ function edit_alignment_success(responseText, statusText, xhr, $form)
 	{
 		add_gritter(alignment.f_title, alignment.f_message);
 	}
-
-	//$form.parent().dialog("close");
 }
 
 function delete_alignment_success(responseText, statusText, xhr, $form) 
