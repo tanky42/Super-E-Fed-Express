@@ -7,4 +7,4 @@
 			<input type="hidden" name="alignment_id[]" value="" />
 			<input type="hidden" name="display_order[]" value="" />
 			</form>
-		</form>
+		</div>

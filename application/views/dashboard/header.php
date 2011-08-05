@@ -31,7 +31,7 @@
 	</script>
 </head>
 <body>
-	<header>
+	<div id="header">
 		<h1>Super E-Fed Express</h1>
 
 		<div id="flash" class="message_default">
@@ -41,8 +41,10 @@
 		<nav>
 			<ul>
 				<li><a href="<?php echo base_url(); ?>index.php/alignments">Alignments</a></li>
+				<li><button id="btnInfoTable">Show Tables</button></li>
+				<li><button id="btnShowMain" class="hide">Show Main</button></li>
 			</ul>
 		</nav>
-	</header>
+	</div>
 
-	<section id="main">
+	<div id="main">

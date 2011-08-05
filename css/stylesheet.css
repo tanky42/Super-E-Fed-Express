@@ -8,59 +8,59 @@
 body {
 	font-family: Michroma, sans-serif;
 	font-size: 14px;
-	margin: 40px;
+	margin: 20px;
 }
 
-header {
-	height: 75px;
-	margin-bottom: 25px;
-	padding: 0px 25px 0px 25px;
-	width: 90%;
-	position: fixed;
-	top: 40px;
-	left: 40px;
+#header {
+	margin: auto;
+	width: 95%;
 }
 
-header h1 {
+#header h1 {
 	display: inline-block;
+	float: left;
 	height: 60px;
 	padding-top: 15px;
 	text-align: center;
 	width: 34%;
 }
 
-header nav {
+#header nav {
 	clear: both;
 	font-size: 18px;
 	text-align: center;
 }
 
-header nav ul {
+#header nav ul {
 	list-style: none;
+	text-align: center;
 }
 
-header nav ul li {
-	display: inline-block;	
-	padding: 15px;
+#header nav ul li {
+	display: inline;	
+	padding-right: 15px;
 }
 
 #main {
 	height: 111px;
+	margin: auto;
 	overflow: auto;
-	padding: 0px 40px 0px 40px;
-	width: 88%;
-	position: fixed;
-	top: 165px;
+	padding: 0px 0px 0px 20px;
+	width: 95%;
 }
 
-footer {
-	height: 50px;
-	margin-top: 15px;
-	padding: 0px 25px 0px 25px;
+#info_tables {
+	height: 250px;
+	padding: 0px 5px 0px 5px;
 	width: 90%;
-	position: fixed;
-	bottom: 40px;
-	left: 40px;
+}
+
+#footer {
+	height: 50px;
+	margin: auto;
+	width: 95%;
+	position: relative;
+	bottom: 20px;
 }
 
 .ajax-loader {
@@ -75,7 +75,9 @@ footer {
 	height: 65px;
 	margin: 5px 5px 0 0;
 	overflow: auto;
+	position: relative;
 	width: 65%;
+	z-index: 9999;
 }
 
 #flash p {
@@ -106,4 +108,50 @@ footer {
 .marked_for_mass {
 	/*background: #CCFFFF;*/
 	/*border: 1px solid #CCCCFF;*/
+}
+
+.tableDiv {
+	border: 1px solid #ccc;
+	float: left;
+	font-size: 10px;
+	margin: 0px 25px 0px 0px;
+	position: relative;
+	text-align: center;
+	width: 45%;
+	/*z-index: 1;*/
+}
+
+.el_info {
+	border: 1px solid black;
+	border-collapse: collapse;
+	width: 100%;
+}
+
+.el_info th {
+	background: #ddd;
+	border: 1px solid black;
+	padding: 0px;
+}
+
+.el_info td {
+	border: 1px solid black;
+	padding: 0px;
+	width: 50%;
+}
+
+.spacer {
+	height: 10px;
+}
+
+.spacer th {
+	background: white;
+}
+
+.odd {
+	background: #eee;
+}
+
+.expand {
+	height: 100%;
+	z-index: 9999;
 }

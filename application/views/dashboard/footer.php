@@ -1,7 +1,7 @@
-	</section>
+	</div>
 
-	<footer>
+	<div id="footer">
 		Copyright 3RC&copy;
-	</footer>
+	</div>
 </body>
 </html>
