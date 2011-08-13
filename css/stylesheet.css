@@ -1,157 +1,122 @@
-/*@import url(http://fonts.googleapis.com/css?family=Michroma&v2);*/
-
-@font-face {
-	font-family: Michroma;
-	src: url("Michroma-webfont.eot");
-}
-
 body {
-	font-family: Michroma, sans-serif;
+	font-family: 'Michroma', sans-serif;
 	font-size: 14px;
 	margin: 20px;
 }
 
+.container > div {
+	background: #eee;
+	border: 1px solid #ccc;
+}
+
 #header {
-	margin: auto;
-	width: 95%;
+	margin-bottom: 5px;
 }
 
-#header h1 {
-	display: inline-block;
-	float: left;
-	height: 60px;
-	padding-top: 15px;
-	text-align: center;
-	width: 34%;
+#main_nav {
+	height: 100%;
+	margin: 0px;
 }
 
-#header nav {
-	clear: both;
-	font-size: 18px;
-	text-align: center;
-}
-
-#header nav ul {
+.sub_menu_list {
 	list-style: none;
-	text-align: center;
+	margin: -10px;
+	padding: 0px;
+	width: 100%;
 }
 
-#header nav ul li {
-	display: inline;	
-	padding-right: 15px;
-}
-
-#main {
-	height: 111px;
-	margin: auto;
-	overflow: auto;
-	padding: 0px 0px 0px 20px;
-	width: 95%;
-}
-
-#info_tables {
-	height: 250px;
-	padding: 0px 5px 0px 5px;
-	width: 90%;
+.sub_menu_list li {
+	background: #fed;
+	display: block;
+	width: 100%;
 }
 
 #footer {
-	height: 50px;
-	margin: auto;
-	width: 95%;
-	position: relative;
-	bottom: 20px;
+	bottom: 0px;
+	margin-top: 5px;
+	position: relative;	
 }
 
-.ajax-loader {
-		margin-right: 25px;
-	}
+.clear {
+	clear: both;
+}
+
 .hide {
 	display: none;
 }
 
-#flash {
-	float: right;
-	height: 65px;
-	margin: 5px 5px 0 0;
-	overflow: auto;
-	position: relative;
-	width: 65%;
-	z-index: 9999;
+.ui-widget {
+	font-family: 'Michroma', sans-serif;
+	font-size: 14px;
 }
 
-#flash p {
-	margin: 10px;
-	font-weight: bold;
-}
-
-.message_default {
-	background: #eee;
-	border: 1px solid #ccc;
-}
-
-.message_error {
-	background: #fee;
-	border: 2px solid maroon;	
-}
-
-.message_success {
-	background: #99FF99;
-	border: 2px solid #006600;	
-}
-
-.new_item {
-	background: #FFFFCC;
-	border: 1px solid #FFC111;
-}
-
-.marked_for_mass {
-	/*background: #CCFFFF;*/
-	/*border: 1px solid #CCCCFF;*/
-}
-
-.tableDiv {
-	border: 1px solid #ccc;
-	float: left;
+.ui-tabs .ui-tabs-nav li a {
 	font-size: 10px;
-	margin: 0px 25px 0px 0px;
-	position: relative;
+}
+
+.ag {
+	border: 1px solid green;
 	text-align: center;
-	width: 45%;
-	/*z-index: 1;*/
 }
 
-.el_info {
-	border: 1px solid black;
-	border-collapse: collapse;
-	width: 100%;
+.ags {
+	text-align: center;
 }
 
-.el_info th {
-	background: #ddd;
-	border: 1px solid black;
+.ajax-loader {
+	margin-right: 25px;
+}
+
+.item_name {
+	font-size: 18px;
+}
+
+/***************/
+/* Was see.css */
+/**************/
+
+.list_header h2 {
+	font-size: 16px;
+}
+
+.control_buttons {
+	margin: 10px 0px 10px 0px;
+}
+
+.ui-button-icon-primary {
+	margin-right: 150px;
+}
+
+.ui-button-text {
+	font-family: 'Michroma', sans-serif;
+	font-size: 10px;
+}
+
+.settings_list ul {
+	list-style: none;
+	margin: 0px;
 	padding: 0px;
 }
 
-.el_info td {
-	border: 1px solid black;
+.settings_list ul li {
+	margin: 0px 0px 5px 0px;
 	padding: 0px;
-	width: 50%;
 }
 
-.spacer {
-	height: 10px;
-}
-
-.spacer th {
-	background: white;
-}
-
-.odd {
-	background: #eee;
-}
-
-.expand {
-	height: 100%;
+.list_header fieldset legend{
+	background: #ccc;
+	margin-left: 25px;
 	z-index: 9999;
+}
+
+.list_header fieldset form, .list_header fieldset button {
+	margin-left: 15px;
+}
+
+#replace_input {
+	width: 85%;
+}
+
+.delete_check {
+	margin-top: 4px;
 }

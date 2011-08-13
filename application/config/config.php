@@ -14,7 +14,7 @@
 | path to your installation.
 |
 */
-$config['base_url']	= 'http://see/';
+$config['base_url']	= 'http://superblankexpress.com/see/';
 
 /*
 |--------------------------------------------------------------------------

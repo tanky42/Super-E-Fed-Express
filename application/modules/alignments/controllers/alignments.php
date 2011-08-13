@@ -20,14 +20,14 @@ class Alignments extends MX_Controller {
 		}
 
 		// Load Header
-		$header['page_title'] = "Alignments";
-		$this->load->view('../../../views/dashboard/header', $header);
+		//$header['page_title'] = "Alignments";
+		//$this->load->view('../../../views/dashboard/header', $header);
 
 		// Load Index
 		$this->load->view('index-alignments', $data);
 
 		// Load Footer
-		$this->load->view('../../../views/dashboard/footer');
+		//$this->load->view('../../../views/dashboard/footer');
 	}
 
 	function display_alignment_list()

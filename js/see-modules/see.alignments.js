@@ -1,12 +1,12 @@
 function alignment_init()
 {
-	alignment_init_sheepit(); // SheepIt has to be called before ValidVal
+	//alignment_init_sheepit(); // SheepIt has to be called before ValidVal
 	alignment_init_validation();
 	alignment_init_dialogs();
-	alignment_sortable_init();
-	alignment_init_buttons();
-	alignment_init_events();
-	alignment_init_forms();
+	//alignment_sortable_init();
+	//alignment_init_buttons();
+	//alignment_init_events();
+	//alignment_init_forms();
 }
 
 /********************************************************

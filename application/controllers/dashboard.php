@@ -12,6 +12,22 @@ class Dashboard extends CI_Controller
 
 	function index()
 	{
+		// Load Header
+		$header['page_title'] = "Alignments";
+		$header['menu'] = $this->load->view('dashboard/menu', '', TRUE);
+		$header['test'] = "Test test test";
+
+		$this->load->view('dashboard/header', $header);
+
+		// Load Index
+		$this->load->view('dashboard/index');
+
+		// Load Footer
+		$this->load->view('dashboard/footer');
+	}
+
+	function index_orig()
+	{
 		if (!$this->tank_auth->is_logged_in()) {
 			redirect('/auth/login/');
 

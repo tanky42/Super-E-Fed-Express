@@ -1,7 +1,9 @@
-	</div>
-
-	<div id="footer">
-		Copyright 3RC&copy;
+			</div>
+		</div>
+		
+		<div id="footer" class="grid_24">
+			This is the footer
+		</div>
 	</div>
 </body>
 </html>
