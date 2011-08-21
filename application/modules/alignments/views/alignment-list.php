@@ -50,6 +50,8 @@
 
 				<script>
 				$(function() {
+					$(".item_name").live("dblclick", function() {});
+				
 					$(".add_button").button({
 						icons: {
 							primary:	"ui-icon-circle-plus"
@@ -89,5 +91,101 @@
 						},
 						text: false
 					});
+					
+					$(".item_name").live("dblclick", function() {
+						// Check that no other inline edits are open
+						cancel_inline();
+				
+						// Add inline edit
+						add_inline_edit($(this));
+					});					
 				});
+				
+				function add_inline_edit(theEl)
+				{
+					var item_val = theEl.text();
+					var item_title = theEl.attr("title");
+			
+					var replace_input = '<input id="replace_input" title="' + item_title + '" data-orig="' + item_val +'" value="' + item_val +'" />';
+					replace_input += '<button id="btnInlineReset">Reset</button>';
+			
+					var inline_buttons = '<button class="list_button1 inline_save">Save</button>';
+					inline_buttons += '<button class="list_button1 inline_cancel">Cancel</button>';
+			
+					theEl
+						.parent()
+							.html(replace_input)
+							.toggleClass("grid_20 grid_19")
+							.prev()
+								.toggleClass("grid_2 grid_3")
+								.html(inline_buttons)
+								.children("button")
+									.first()
+										.button({
+											icons: {
+												primary: "ui-icon-disk"
+											},
+											text: false
+										})
+										.height("20px")
+										.width("20px")
+									.next()
+										.button({
+											icons: {
+												primary: "ui-icon-cancel"
+											},
+											text: false
+										})
+										.height("20px")
+										.width("20px");
+			
+					$("#btnInlineReset").button({
+						icons: {
+							primary: "ui-icon-arrowrefresh-1-e"
+						},
+						text: false,
+						create: function() {
+							$(this).height("22px").width("22px");
+						}
+					}).click(function() {
+						$(this).prev().val($(this).prev().attr("data-orig"));
+					});
+				}
+			
+				function save_inline()
+				{
+					var replace_input = $("#replace_input");
+			
+					replace_input.attr("data-orig", replace_input.val());
+			
+					cancel_inline();
+				}
+			
+				function cancel_inline()
+				{
+					$("#replace_input").each(function() {
+						var ri_parent = $(this).parent();
+			
+						var item_name = '<span class="item_name" title="' + $(this).attr("title") + '">' + $(this).attr("data-orig") + '</span>';
+			
+						var delete_button = '<button class="list_button1 delete_item">Delete</button>';
+			
+						ri_parent
+							.toggleClass("grid_20 grid_19")
+							.html(item_name)
+							.prev()
+								.toggleClass("grid_3 grid_2")
+								.html(delete_button)
+								.children("button")
+									.first()
+										.button({
+											icons: {
+												primary: "ui-icon-trash"
+											},
+											text: false
+										})
+										.height("20px")
+										.width("20px");
+					});
+				}				
 				</script>
