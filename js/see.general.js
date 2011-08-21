@@ -5,8 +5,6 @@ function init()
 	$(".acitem li a").live("click", function(e) {
 		e.preventDefault();
 
-		alert("URL: " + $(this).attr("href"));
-
 		$("#content").load($(this).attr("href"));
 	});
 }
