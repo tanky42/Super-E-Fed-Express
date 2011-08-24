@@ -164,6 +164,31 @@ class Alignments extends MX_Controller {
 			redirect("/alignments/index");
 		}
 	}
+	
+	function update_single_alignment_ajax()
+	{
+		if (isset($_POST['alignment_id']))
+		{
+			$id = $this->input->post('alignment_id');
+			$desc = $this->input->post('edit_description');
+			$display_order = $this->input->post('display_order');
+			
+			$a = new Alignment();
+			$a->where('id', $id)->get();
+
+			$a->description = $desc;
+			$a->display_order = $display_order;				
+
+			if ($a->save())
+			{
+				echo "1";
+			}
+			else
+			{
+				echo "0";
+			}
+		}
+	}
 
 	function update_alignment_ajax()
 	{

@@ -30,14 +30,12 @@
 									<input type="checkbox" name="delete_alignment[]" class="delete_check" value="1" />
 								</div>
 
-								<div class="grid_2" style="text-align: right;">
-									<button class="list_button delete_item">Delete</button>
+								<div class="grid_2" style="text-align: center;">
+									<button class="list_button delete_item inline_delete">Delete</button>
 								</div>
 
-								<div class="grid_19">
+								<div class="grid_20">
 									<span class="item_name"><?php echo $alignment->description; ?></span>
-									<!-- <img class="reset hide" src="images/reset.gif" width="16" height="16" border="0" alt="Reset" title="Reset" /> -->
-									<img class="reset hide" src="<?php echo base_url(); ?>css/sheep/images/reset.gif" width="16" height="16" border="0" alt="Reset" title="Reset" />
 									<input type="hidden" class="id" value="<?php echo $alignment->id; ?>" />
 									<input type="hidden" class="display_order" value="<?php echo $alignment->display_order; ?>" />
 								</div>
@@ -47,6 +45,19 @@
 						</ul>
 					</div>
 				</div>
+				
+				<style>
+				.inline_delete {
+					height: 24px;
+					width: 24px;
+				}
+				
+				#btnInlineReset {
+					margin-bottom: 5px;
+					margin-left: 5px;
+					vertical-align: middle;
+				}
+				</style>
 
 				<script>
 				$(function() {
@@ -98,23 +109,24 @@
 				
 						// Add inline edit
 						add_inline_edit($(this));
-					});					
+					});
+					
+					$(".inline_delete").height("24px").width("24px");			
 				});
 				
 				function add_inline_edit(theEl)
 				{
 					var item_val = theEl.text();
-					var item_title = theEl.attr("title");
 			
-					var replace_input = '<input id="replace_input" title="' + item_title + '" data-orig="' + item_val +'" value="' + item_val +'" />';
+					var replace_input = '<input id="replace_input" data-orig="' + item_val +'" value="' + item_val +'" />';
 					replace_input += '<button id="btnInlineReset">Reset</button>';
 			
 					var inline_buttons = '<button class="list_button1 inline_save">Save</button>';
 					inline_buttons += '<button class="list_button1 inline_cancel">Cancel</button>';
 			
-					theEl
+					theEl						
 						.parent()
-							.html(replace_input)
+							//.html(replace_input)
 							.toggleClass("grid_20 grid_19")
 							.prev()
 								.toggleClass("grid_2 grid_3")
@@ -127,8 +139,9 @@
 											},
 											text: false
 										})
-										.height("20px")
-										.width("20px")
+										.height("24px")
+										.width("24px")
+										.css("margin-right", "5px")
 									.next()
 										.button({
 											icons: {
@@ -136,8 +149,14 @@
 											},
 											text: false
 										})
-										.height("20px")
-										.width("20px");
+										.height("24px")
+										.width("24px")
+									.end()
+								.end()
+							.end()
+						.end()
+					.end()
+					.replaceWith(replace_input);
 			
 					$("#btnInlineReset").button({
 						icons: {
@@ -145,20 +164,57 @@
 						},
 						text: false,
 						create: function() {
-							$(this).height("22px").width("22px");
+							$(this).height("24px").width("24px");
 						}
 					}).click(function() {
 						$(this).prev().val($(this).prev().attr("data-orig"));
+					});
+					
+					$(".inline_save").click(function() {
+						save_inline();
+					});
+					
+					$(".inline_cancel").click(function() {
+						cancel_inline();
 					});
 				}
 			
 				function save_inline()
 				{
 					var replace_input = $("#replace_input");
+					var old_value = replace_input.attr("data-orig");
+					var new_value = replace_input.val();
 			
-					replace_input.attr("data-orig", replace_input.val());
-			
-					cancel_inline();
+					if (old_value != new_value)
+					{
+						replace_input.attr("data-orig", new_value);
+						
+						var sibs = replace_input.siblings("input");
+						
+						var id = sibs.first().val();
+						var dspOrder = sibs.last().val();
+						
+						$.post("<?php echo base_url(); ?>index.php/alignments/update_single_alignment_ajax", 
+							{
+								alignment_id: id,
+								edit_description: new_value,
+								display_order: dspOrder
+							},						
+							function(data) {
+								alert("Data: " + data);
+							
+								if (parseInt(data))
+								{
+									$(".updated_item").removeClass("updated_item");
+								}
+								else
+								{
+									$(".updated_item").text(old_value).removeClass("updated_item");
+								}
+							});
+				
+						cancel_inline();
+					}
 				}
 			
 				function cancel_inline()
@@ -166,8 +222,8 @@
 					$("#replace_input").each(function() {
 						var ri_parent = $(this).parent();
 			
-						var item_name = '<span class="item_name" title="' + $(this).attr("title") + '">' + $(this).attr("data-orig") + '</span>';
-			
+						var item_name = '<span class="item_name updated_item">' + $(this).attr("data-orig") + '</span>';
+									
 						var delete_button = '<button class="list_button1 delete_item">Delete</button>';
 			
 						ri_parent
@@ -184,8 +240,8 @@
 											},
 											text: false
 										})
-										.height("20px")
-										.width("20px");
+										.height("24px")
+										.width("24px");
 					});
 				}				
 				</script>

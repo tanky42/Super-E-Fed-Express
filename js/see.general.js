@@ -7,6 +7,11 @@ function init()
 
 		$("#content").load($(this).attr("href"));
 	});
+	
+	if (!$(".active2").length)
+	{
+		$(".expand").find("li").eq(1).find("a").first().trigger("click");
+	}
 }
 
 /********************************************************
