@@ -39,7 +39,7 @@
 									<input type="hidden" class="id" value="<?php echo $alignment->id; ?>" />
 									<input type="hidden" class="display_order" value="<?php echo $alignment->display_order; ?>" />
 								</div>
-							</li>
+							</li>						
 								<?php endforeach; ?>
 							<?php endif; ?>
 						</ul>
@@ -111,7 +111,20 @@
 						add_inline_edit($(this));
 					});
 					
-					$(".inline_delete").height("24px").width("24px");			
+					$(".inline_delete").height("24px").width("24px");
+										
+					$("#alignments").sortable({
+						axis:		"y",
+						start: function(event, ui) {
+							ui.item.addClass("ui-state-highlight");
+						},
+						//forcePlaceholderSize:	true,
+						//placeholder:	"ui-state-highlight",
+						revert:		true,
+						update:		function(event, ui) {
+							ui.item.removeClass("ui-state-highlight");
+						}
+					});		
 				});
 				
 				function add_inline_edit(theEl)
