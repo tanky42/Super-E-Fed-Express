@@ -28,17 +28,6 @@
 							<li class="inline_edit">
 								<input type="checkbox" name="delete_alignment[]" class="delete_check" value="1" />
 
-<<<<<<< HEAD
-								<div class="grid_2" style="text-align: center;">
-									<button class="list_button delete_item inline_delete">Delete</button>
-								</div>
-
-								<div class="grid_20">
-									<span class="item_name"><?php echo $alignment->description; ?></span>
-									<input type="hidden" class="id" value="<?php echo $alignment->id; ?>" />
-									<input type="hidden" class="display_order" value="<?php echo $alignment->display_order; ?>" />
-								</div>
-=======
 								<button class="inline_buttons delete_item inline_delete">Delete</button>
 								<button class="inline_buttons_hidden inline_save">Save</button>
 								<button class="inline_buttons_hidden inline_cancel">Cancel</button>
@@ -46,7 +35,6 @@
 								<span class="item_name list_data"><?php echo $alignment->description; ?></span>
 								<input type="hidden" class="id list_data" value="<?php echo $alignment->id; ?>" />
 								<input type="hidden" class="display_order list_data" value="<?php echo $alignment->display_order; ?>" />
->>>>>>> Fixed updating display order logic
 							</li>						
 								<?php endforeach; ?>
 							<?php endif; ?>
@@ -62,8 +50,6 @@
 				</div>
 				
 				<style>
-<<<<<<< HEAD
-=======
 				.add_button {
 					margin-left: 5px;
 				}
@@ -72,7 +58,6 @@
 					margin-right: 5px;
 				}
 
->>>>>>> Fixed updating display order logic
 				.inline_delete {
 					height: 24px;
 					width: 24px;
@@ -83,8 +68,6 @@
 					margin-left: 5px;
 					vertical-align: middle;
 				}
-<<<<<<< HEAD
-=======
 
 				#replace_input {
 					width: 70%;
@@ -93,7 +76,6 @@
 				.delete_check {
 					margin-right: 5px;
 				}
->>>>>>> Fixed updating display order logic
 				</style>
 
 				<script>
@@ -210,22 +192,6 @@
 						add_inline_edit($(this));
 					});
 					
-<<<<<<< HEAD
-					$(".inline_delete").height("24px").width("24px");
-										
-					$("#alignments").sortable({
-						axis:		"y",
-						start: function(event, ui) {
-							ui.item.addClass("ui-state-highlight");
-						},
-						//forcePlaceholderSize:	true,
-						//placeholder:	"ui-state-highlight",
-						revert:		true,
-						update:		function(event, ui) {
-							ui.item.removeClass("ui-state-highlight");
-						}
-					});		
-=======
 					$(".inline_buttons, .inline_buttons_hidden").height("24px").width("24px").css("margin-right", "5px");
 
 					$("#alignments").sortable({												
@@ -243,7 +209,6 @@
 					});
 
 					$(".inline_buttons_hidden").hide();
->>>>>>> Fixed updating display order logic
 				});
 
 				function update_display_order(url, theEl, idName, orderName, parent)
@@ -383,44 +348,6 @@
 					var replace_input = '<input id="replace_input" data-orig="' + item_val +'" value="' + item_val +'" />';
 					replace_input += '<button id="btnInlineReset">Reset</button>';
 			
-<<<<<<< HEAD
-					var inline_buttons = '<button class="list_button1 inline_save">Save</button>';
-					inline_buttons += '<button class="list_button1 inline_cancel">Cancel</button>';
-			
-					theEl						
-						.parent()
-							//.html(replace_input)
-							.toggleClass("grid_20 grid_19")
-							.prev()
-								.toggleClass("grid_2 grid_3")
-								.html(inline_buttons)
-								.children("button")
-									.first()
-										.button({
-											icons: {
-												primary: "ui-icon-disk"
-											},
-											text: false
-										})
-										.height("24px")
-										.width("24px")
-										.css("margin-right", "5px")
-									.next()
-										.button({
-											icons: {
-												primary: "ui-icon-cancel"
-											},
-											text: false
-										})
-										.height("24px")
-										.width("24px")
-									.end()
-								.end()
-							.end()
-						.end()
-					.end()
-					.replaceWith(replace_input);
-=======
 					theEl.hide()
 						.parent()
 							.append(replace_input)
@@ -444,7 +371,6 @@
 										text: false
 									});
 							
->>>>>>> Fixed updating display order logic
 			
 					$("#btnInlineReset").button({
 						icons: {
@@ -465,11 +391,8 @@
 					$(".inline_cancel").click(function() {
 						cancel_inline();
 					});
-<<<<<<< HEAD
-=======
 
 					$("#replace_input").select();
->>>>>>> Fixed updating display order logic
 				}
 			
 				function save_inline()
@@ -477,11 +400,8 @@
 					var replace_input = $("#replace_input");
 					var old_value = replace_input.attr("data-orig");
 					var new_value = replace_input.val();
-<<<<<<< HEAD
-=======
 
 					replace_input.siblings(".item_name").addClass("updated_item").addClass("ui-state-highlight");
->>>>>>> Fixed updating display order logic
 			
 					if (old_value != new_value)
 					{
@@ -491,11 +411,7 @@
 						
 						var id = sibs.first().val();
 						var dspOrder = sibs.last().val();
-<<<<<<< HEAD
-						
-=======
 
->>>>>>> Fixed updating display order logic
 						$.post("<?php echo base_url(); ?>index.php/alignments/update_single_alignment_ajax", 
 							{
 								alignment_id: id,
@@ -503,17 +419,6 @@
 								display_order: dspOrder
 							},						
 							function(data) {
-<<<<<<< HEAD
-								alert("Data: " + data);
-							
-								if (parseInt(data))
-								{
-									$(".updated_item").removeClass("updated_item");
-								}
-								else
-								{
-									$(".updated_item").text(old_value).removeClass("updated_item");
-=======
 								if (parseInt(data))
 								{
 									animate_list_item("ui-state-highlight", "message_default", 0, 0);
@@ -524,7 +429,6 @@
 								{
 									$(".updated_item").text(old_value).removeClass("updated_item").addClass("ui-state-error");
 									animate_list_item("ui-state-error", "message_default", 0, 0);
->>>>>>> Fixed updating display order logic
 								}
 							});
 				
@@ -535,30 +439,6 @@
 				function cancel_inline()
 				{
 					$("#replace_input").each(function() {
-<<<<<<< HEAD
-						var ri_parent = $(this).parent();
-			
-						var item_name = '<span class="item_name updated_item">' + $(this).attr("data-orig") + '</span>';
-									
-						var delete_button = '<button class="list_button1 delete_item">Delete</button>';
-			
-						ri_parent
-							.toggleClass("grid_20 grid_19")
-							.html(item_name)
-							.prev()
-								.toggleClass("grid_3 grid_2")
-								.html(delete_button)
-								.children("button")
-									.first()
-										.button({
-											icons: {
-												primary: "ui-icon-trash"
-											},
-											text: false
-										})
-										.height("24px")
-										.width("24px");
-=======
 						var parent = $(this).closest("li");
 						var item_name = $(this).attr("data-orig");
 
@@ -578,7 +458,6 @@
 							.find(".item_name")
 								.text(item_name)
 								.show();
->>>>>>> Fixed updating display order logic
 					});
 				}				
 				</script>

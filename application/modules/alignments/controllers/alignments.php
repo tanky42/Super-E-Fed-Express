@@ -202,30 +202,22 @@ class Alignments extends MX_Controller {
 		if (isset($_POST['alignment_id']))
 		{
 			$id = $this->input->post('alignment_id');
-<<<<<<< HEAD
-			$desc = $this->input->post('edit_description');
-=======
 
 			if (isset($_POST['edit_description']))
 			{
 				$desc = $this->input->post('edit_description');
 			}
 
->>>>>>> Fixed updating display order logic
 			$display_order = $this->input->post('display_order');
 			
 			$a = new Alignment();
 			$a->where('id', $id)->get();
 
-<<<<<<< HEAD
-			$a->description = $desc;
-=======
 			if (isset($_POST['edit_description']))
 			{
 				$a->description = $desc;
 			}
 
->>>>>>> Fixed updating display order logic
 			$a->display_order = $display_order;				
 
 			if ($a->save())

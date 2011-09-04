@@ -13,3 +13,7 @@ application/config/database.php
 .DS_Store
 
 application/config/config.php
+
+application/config/database.php
+
+application/config/config.php
