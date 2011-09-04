@@ -86,6 +86,38 @@ class Alignments extends MX_Controller {
 		{
 			$desc = $this->input->post('alignment_description');
 
+			foreach ($desc as $d)
+			{
+				$a = new Alignment();
+				$a->description = $d;
+
+				if ($a->save())
+				{
+					//echo $a->id;
+					$data = array(
+						'id'		=> $a->id,
+						'desc'		=> $a->description,
+						'display_order'	=> 9999
+					);
+				}
+				else
+				{
+					$data = array(
+						'id'	=> 0
+					);
+				}
+			}
+
+			echo json_encode($data);
+		}
+	}
+
+	function add_alignment_ajax_old()
+	{
+		if (isset($_POST['alignment_description']))
+		{
+			$desc = $this->input->post('alignment_description');
+
 			$success = 0;
 			$fail = 0;
 			$s_title = '';
@@ -170,13 +202,30 @@ class Alignments extends MX_Controller {
 		if (isset($_POST['alignment_id']))
 		{
 			$id = $this->input->post('alignment_id');
+<<<<<<< HEAD
 			$desc = $this->input->post('edit_description');
+=======
+
+			if (isset($_POST['edit_description']))
+			{
+				$desc = $this->input->post('edit_description');
+			}
+
+>>>>>>> Fixed updating display order logic
 			$display_order = $this->input->post('display_order');
 			
 			$a = new Alignment();
 			$a->where('id', $id)->get();
 
+<<<<<<< HEAD
 			$a->description = $desc;
+=======
+			if (isset($_POST['edit_description']))
+			{
+				$a->description = $desc;
+			}
+
+>>>>>>> Fixed updating display order logic
 			$a->display_order = $display_order;				
 
 			if ($a->save())
@@ -197,13 +246,22 @@ class Alignments extends MX_Controller {
 			if (!is_array($_POST['alignment_id']))
 			{
 				$id = array($this->input->post('alignment_id'));
-				$desc = array($this->input->post('edit_description'));
+				if (isset($_POST['edit_description']))
+				{
+					$desc = array($this->input->post('edit_description'));
+				}
+
 				$display_order = array($this->input->post('display_order'));
 			}
 			else
 			{
 				$id = $this->input->post('alignment_id');
-				$desc = $this->input->post('edit_description');
+
+				if (isset($_POST['edit_description']))
+				{
+					$desc = $this->input->post('edit_description');
+				}
+
 				$display_order = $this->input->post('display_order');
 			}
 
@@ -224,7 +282,11 @@ class Alignments extends MX_Controller {
 				$a = new Alignment();
 				$a->where('id', $item)->get();
 
-				$a->description = $desc[$idx];
+				if (isset($_POST['edit_description']))
+				{
+					$a->description = $desc[$idx];
+				}
+
 				$a->display_order = $display_order[$idx];				
 
 				if ($a->save())
@@ -241,12 +303,23 @@ class Alignments extends MX_Controller {
 					}
 
 					$success = 1;
-					$s_message .= "<p>$desc[$idx] was successfully updated</p>";
 
-					$info[] = array(
-						'id'	=> $a->id,
-						'desc'	=> $desc[$idx]
-					);
+					if (isset($_POST['edit_description']))
+					{
+						$s_message .= "<p>$desc[$idx] was successfully updated</p>";
+
+						$info[] = array(
+							'id'	=> $a->id,
+							'desc'	=> $desc[$idx]
+						);
+					}
+					else
+					{
+						$info[] = array(
+							'id'	=> $a->id,
+							'desc'	=> ""
+						);
+					}
 				}
 				else
 				{
@@ -263,7 +336,11 @@ class Alignments extends MX_Controller {
 
 					$fail = 1;
 
-					$f_message .= "<p>$desc[$idx] was <strong>not</strong> successfully updated</p>";
+					if (isset($_POST['edit_description']))
+					{
+						$f_message .= "<p>$desc[$idx] was <strong>not</strong> successfully updated</p>";
+					}
+
 					$f_message .= "<p>" . $a->error->description . "</p>";
 				}
 
@@ -330,6 +407,26 @@ class Alignments extends MX_Controller {
 		else
 		{
 			redirect("/alignments/index");
+		}
+	}
+
+	function delete_single_alignment_ajax()
+	{
+		if (isset($_POST['alignment_delete_id']))
+		{
+			$id = $this->input->post('alignment_delete_id');
+			
+			$a = new Alignment();
+			$a->where('id', $id)->get();							
+
+			if ($a->delete())
+			{
+				echo "1";
+			}
+			else
+			{
+				echo "0";
+			}
 		}
 	}
 }
