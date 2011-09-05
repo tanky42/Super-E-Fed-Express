@@ -77,9 +77,20 @@
 					margin-right: 5px;
 				}
 				</style>
-
+				
 				<script>
 				$(function() {
+					/*
+					var add_form = $("#frmAddAlignment").validVal({
+						validate:		{
+							onBlur:		false,
+							onSubmit:	true
+						}
+					});
+					*/
+					
+					var valid_forms = alignment_init_validation();
+				
 					$("#confirm_alignment_delete").dialog({
 						autoOpen:	false,
 						resizable:	false,
@@ -106,10 +117,17 @@
 						}
 					}).live("click", function(e) {
 						e.preventDefault();
-
-						var addForm = $(this).closest("form");
-
-						submit_add_form(addForm);
+						
+						//var form_data = add_form.submitform();
+						
+						var form_data = valid_forms["add_form"].submitform();
+											
+						if (form_data)
+						{
+							var addForm = $(this).closest("form");
+	
+							submit_add_form(addForm);
+						}
 					});
 
 					$(".btnSelectAll").button().live("click", function() {
@@ -195,9 +213,7 @@
 					$(".inline_buttons, .inline_buttons_hidden").height("24px").width("24px").css("margin-right", "5px");
 
 					$("#alignments").sortable({												
-						//forcePlaceholderSize:	true,
 						placeholder:	"ui-state-highlight",
-						//revert:	true,
 						stop: function() {
 							var url = "<?php echo base_url(); ?>index.php/alignments/update_alignment_ajax";
 							var idName = "alignment_id";

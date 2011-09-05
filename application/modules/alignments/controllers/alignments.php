@@ -6,6 +6,11 @@ class Alignments extends MX_Controller {
 	{
 		parent::__construct();
 	}
+	
+	function test()
+	{
+		echo "test";
+	}
 
 	function index()
 	{

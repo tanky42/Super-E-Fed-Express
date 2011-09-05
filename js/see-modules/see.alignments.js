@@ -1,7 +1,7 @@
 function alignment_init()
 {
 	//alignment_init_sheepit(); // SheepIt has to be called before ValidVal
-	alignment_init_validation();
+	//alignment_init_validation();
 	alignment_init_dialogs();
 	//alignment_sortable_init();
 	//alignment_init_buttons();
@@ -20,7 +20,9 @@ var validated_add_alignment, validated_edit_alignment;
 
 function alignment_init_validation()
 {
-	validated_add_alignment = 
+	var valid_forms = new Array();
+	
+	valid_forms["add_form"] =
 		$("#frmAddAlignment").validVal({
 			validate:		{
 				onBlur:		false,
@@ -28,7 +30,8 @@ function alignment_init_validation()
 			},
 			invalidFormFunc:	build_valid_val_error
 		});
-
+	
+	/*
 	validated_edit_alignment =
 		$("#frmUpdateAlignment").validVal({
 			validate:		{
@@ -39,6 +42,9 @@ function alignment_init_validation()
 			invalidFieldFunc:	inline_edit_validation_error,
 			invalidFormFunc:	build_valid_val_error
 		});
+	*/
+	
+	return valid_forms;
 }
 
 function inline_edit_validation_error($field, $form, language)
